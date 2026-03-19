@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics | CAET Prep</title>
+    <meta name="description"
+        content="Student performance analytics, category mastery radar, and study recommendations for CAET Certification Prep.">
+    <link rel="icon" type="image/png" href="ace-sprites/ace-48-happy.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="caet-theme.css">
+    <style>
+        @media (max-width: 768px) {
+            .deck-grid[style*="repeat(3"] {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        /* BASE & BACKGROUND — matches journey.html / practice.html exactly */
+        body {
+            position: relative;
+            background-color: #080C1A;
+            overflow-x: hidden;
+            min-height: 100vh;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            margin: 0;
+            padding: 0;
+        }
+
+        .cyber-bg {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 15% 50%, rgba(212, 168, 83, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(34, 211, 238, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
+                linear-gradient(180deg, rgba(8, 12, 26, 0) 0%, rgba(8, 12, 26, 0.9) 100%),
+                url('data:image/svg+xml;utf8,<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg"><path d="M0 40 L40 0" stroke="rgba(255,255,255,0.02)" stroke-width="1"/></svg>');
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            transform-origin: center top;
+            opacity: 0.3;
+            z-index: -2;
+            pointer-events: none;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 0 50px;
+            }
+        }
+
+        .main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 24px 100px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* TOPBAR — matches journey/practice */
+        .topbar {
+            background: rgba(8, 12, 26, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .topbar-logo img {
+            height: 32px;
+            filter: drop-shadow(0 0 8px rgba(212, 168, 83, 0.4));
+            transition: all 0.3s ease;
+        }
+
+        .topbar-logo:hover img {
+            filter: drop-shadow(0 0 12px rgba(212, 168, 83, 0.8));
+        }
+
+        .topbar-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topbar-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        /* DECK HERO — matches journey/practice */
+        .deck-hero {
+            text-align: left;
+            margin-bottom: 48px;
+            position: relative;
+            animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            color: #c084fc;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.15) inset;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+            background: linear-gradient(180deg, #FFFFFF 0%, #A0AEC0 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-desc {
+            font-size: 18px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-width: 600px;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* HOLOGRAPHIC CARDS — exact match to practice.html */
+        .holo-card {
+            position: relative;
+            background: rgba(20, 24, 38, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            overflow: hidden;
+            transition: transform 0.1s ease, box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .holo-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.03) 2px, rgba(255, 255, 255, 0.03) 4px);
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            z-index: 2;
+        }
+
+        .holo-card::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, transparent, transparent, transparent);
+            border-radius: 26px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .holo-card:hover::after {
+            opacity: 1;
+        }
+
+        /* CARD INTERNALS */
+        .card-bg-gfx {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 10;
+            padding: 32px 40px;
+            width: 100%;
+            transform: translateZ(20px);
+        }
+
+        /* STATS HERO BAR (inside a holo-card) */
+        .stats-hero-card {
+            flex-direction: column;
+            margin-bottom: 0;
+        }
+
+        .stats-hero-card::after {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), transparent, rgba(168, 85, 247, 0.1));
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.15);
+        }
+
+        .stats-hero-card .card-bg-gfx {
+            background: radial-gradient(circle at top right, rgba(168, 85, 247, 0.12) 0%, transparent 60%);
+        }
+
+        .stats-row {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .stat-block {
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .stat-val {
+            font-family: var(--font-mono);
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .stat-divider {
+            width: 1px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* SECTION DIVIDERS */
+        .section-label {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin: 40px 0 16px;
+            padding-left: 4px;
+        }
+
+        /* GRID LAYOUT */
+        .deck-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .deck-grid .full-span {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 900px) {
+            .deck-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* CARD VARIANTS — Color Treatments */
+        .card-radar::after {
+            background: linear-gradient(135deg, rgba(212, 168, 83, 0.4), transparent, rgba(212, 168, 83, 0.15));
+            box-shadow: 0 0 30px rgba(212, 168, 83, 0.15);
+        }
+
+        .card-radar .card-bg-gfx {
+            background: radial-gradient(circle at top right, rgba(212, 168, 83, 0.1) 0%, transparent 60%);
+        }
+
+        .card-xp::after {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.4), transparent, rgba(96, 165, 250, 0.1));
+            box-shadow: 0 0 30px rgba(96, 165, 250, 0.15);
+        }
+
+        .card-xp .card-bg-gfx {
+            background: radial-gradient(circle at right, rgba(96, 165, 250, 0.1) 0%, transparent 70%);
+        }
+
+        .card-fc::after {
+            background: linear-gradient(135deg, rgba(45, 189, 137, 0.4), transparent, rgba(45, 189, 137, 0.1));
+            box-shadow: 0 0 30px rgba(45, 189, 137, 0.15);
+        }
+
+        .card-fc .card-bg-gfx {
+            background: radial-gradient(circle at right, rgba(45, 189, 137, 0.1) 0%, transparent 70%);
+        }
+
+        .card-lo::after {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.4), transparent, rgba(34, 211, 238, 0.1));
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.15);
+        }
+
+        .card-lo .card-bg-gfx {
+            background: radial-gradient(circle at top left, rgba(34, 211, 238, 0.08) 0%, transparent 60%);
+        }
+
+        .card-journey::after {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.4), transparent, rgba(251, 191, 36, 0.15));
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.15);
+        }
+
+        .card-journey .card-bg-gfx {
+            background: radial-gradient(circle at center, rgba(251, 191, 36, 0.08) 0%, transparent 60%);
+        }
+
+        .card-rec::after {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), transparent, rgba(168, 85, 247, 0.1));
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.1);
+        }
+
+        .card-rec .card-bg-gfx {
+            background: radial-gradient(circle at bottom left, rgba(168, 85, 247, 0.08) 0%, transparent 60%);
+        }
+
+        /* CARD HEADER inside holo-card */
+        .card-hdr {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .card-icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .card-icon-wrap svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .card-hdr-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .card-hdr-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Icon colors per card type */
+        .card-radar .card-icon-wrap {
+            background: rgba(212, 168, 83, 0.1);
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            color: var(--gold);
+        }
+
+        .card-radar:hover .card-icon-wrap {
+            background: rgba(212, 168, 83, 0.2);
+            border-color: rgba(212, 168, 83, 0.5);
+            box-shadow: 0 0 20px rgba(212, 168, 83, 0.2) inset;
+        }
+
+        .card-xp .card-icon-wrap {
+            background: rgba(96, 165, 250, 0.1);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            color: #60a5fa;
+        }
+
+        .card-xp:hover .card-icon-wrap {
+            background: rgba(96, 165, 250, 0.15);
+            border-color: rgba(96, 165, 250, 0.4);
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.2) inset;
+        }
+
+        .card-fc .card-icon-wrap {
+            background: rgba(45, 189, 137, 0.1);
+            border: 1px solid rgba(45, 189, 137, 0.3);
+            color: #2DBD89;
+        }
+
+        .card-fc:hover .card-icon-wrap {
+            background: rgba(45, 189, 137, 0.15);
+            border-color: rgba(45, 189, 137, 0.4);
+            box-shadow: 0 0 20px rgba(45, 189, 137, 0.2) inset;
+        }
+
+        .card-lo .card-icon-wrap {
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            color: #22d3ee;
+        }
+
+        .card-lo:hover .card-icon-wrap {
+            background: rgba(34, 211, 238, 0.15);
+            border-color: rgba(34, 211, 238, 0.4);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.2) inset;
+        }
+
+        .card-journey .card-icon-wrap {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: #fbbf24;
+        }
+
+        .card-rec .card-icon-wrap {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            color: #c084fc;
+        }
+
+        /* SVG radar */
+        .radar-wrap {
+            display: flex;
+            justify-content: center;
+            padding: 8px 0;
+        }
+
+        .radar-wrap svg text {
+            font-family: var(--font-mono);
+        }
+
+        /* Grade colors */
+        .grade-a {
+            color: #34d399 !important;
+            text-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+        }
+
+        .grade-b {
+            color: #60a5fa !important;
+            text-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
+        }
+
+        .grade-c {
+            color: #fbbf24 !important;
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+        }
+
+        .grade-d {
+            color: #fb923c !important;
+            text-shadow: 0 0 20px rgba(251, 146, 60, 0.4);
+        }
+
+        .grade-f {
+            color: #f87171 !important;
+            text-shadow: 0 0 20px rgba(248, 113, 113, 0.4);
+        }
+
+        /* Category bars */
+        .cat-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 7px 0;
+        }
+
+        .cat-label {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 700;
+            min-width: 36px;
+            color: var(--text-muted);
+        }
+
+        .cat-bar {
+            flex: 1;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .cat-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease;
+        }
+
+        .cat-val {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 700;
+            min-width: 50px;
+            text-align: right;
+            color: var(--text-muted);
+        }
+
+        /* Donut & gauge */
+        .donut-wrap {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .donut-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .donut-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .donut-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .donut-num {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            margin-left: auto;
+            min-width: 30px;
+            text-align: right;
+        }
+
+        .gauge-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .gauge-lab {
+            font-size: 13px;
+            color: var(--text-muted);
+            min-width: 110px;
+            font-weight: 600;
+        }
+
+        .gauge-bg {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .gauge-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .gauge-val {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 700;
+            min-width: 50px;
+            text-align: right;
+        }
+
+        /* LO bars */
+        .lo-item {
+            margin-bottom: 14px;
+        }
+
+        .lo-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .lo-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+
+        .lo-name {
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80%;
+        }
+
+        .lo-pct {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .lo-bg {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 3px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .lo-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 1s ease;
+        }
+
+        .fill-h {
+            background: linear-gradient(90deg, #34d399, #10b981);
+        }
+
+        .pct-h {
+            color: #34d399;
+        }
+
+        .fill-m {
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+        }
+
+        .pct-m {
+            color: #fbbf24;
+        }
+
+        .fill-l {
+            background: linear-gradient(90deg, #f87171, #ef4444);
+        }
+
+        .pct-l {
+            color: #f87171;
+        }
+
+        /* Recommendation cards */
+        .rec {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 3px solid;
+        }
+
+        .rec:last-child {
+            margin-bottom: 0;
+        }
+
+        .rec-w {
+            background: rgba(251, 191, 36, 0.06);
+            border-color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            border-left: 3px solid #fbbf24;
+        }
+
+        .rec-d {
+            background: rgba(248, 113, 113, 0.06);
+            border-color: #f87171;
+            border: 1px solid rgba(248, 113, 113, 0.15);
+            border-left: 3px solid #f87171;
+        }
+
+        .rec-s {
+            background: rgba(52, 211, 153, 0.06);
+            border-color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.15);
+            border-left: 3px solid #34d399;
+        }
+
+        .rec-i {
+            background: rgba(96, 165, 250, 0.06);
+            border-color: #60a5fa;
+            border: 1px solid rgba(96, 165, 250, 0.15);
+            border-left: 3px solid #60a5fa;
+        }
+
+        .rec-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rec-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Milestone strip */
+        .mile-strip {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+            overflow-x: auto;
+            padding: 8px 0;
+        }
+
+        .mile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 90px;
+        }
+
+        .mile-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(20, 24, 38, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+
+        .mile-dot.done {
+            border-color: var(--gold);
+            background: rgba(212, 168, 83, 0.15);
+            color: var(--gold);
+            box-shadow: 0 0 12px rgba(212, 168, 83, 0.3);
+        }
+
+        .mile-lbl {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 6px;
+            max-width: 80px;
+            line-height: 1.3;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mile-conn {
+            flex: 1;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.08);
+            min-width: 20px;
+            margin: 0 -4px;
+            align-self: flex-start;
+            margin-top: 18px;
+            z-index: 1;
+        }
+
+        .mile-conn.done {
+            background: var(--gold);
+        }
+
+        .empty {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            padding: 24px 16px;
+            font-style: italic;
+        }
+
+        /* Stagger animations */
+        .anim-1 {
+            opacity: 0;
+            animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+        }
+
+        .anim-2 {
+            opacity: 0;
+            animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards;
+        }
+
+        .anim-3 {
+            opacity: 0;
+            animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+        }
+
+        .anim-4 {
+            opacity: 0;
+            animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
+        }
+
+        /* Back link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-top: 24px;
+            opacity: 0;
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.55s forwards;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cyber-bg"></div>
+    <div class="cyber-grid"></div>
+
+    <header class="topbar">
+        <div class="topbar-logo">
+            <a href="../dashboard.html" style="text-decoration:none;">
+                <img src="logo.png" alt="AEA Training Program" class="logo-img">
+            </a>
+        </div>
+        <div>
+            <a href="../dashboard.html" class="topbar-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                Back to Hub
+            </a>
+        </div>
+    </header>
+
+    <main class="main">
+
+        <!-- DECK HERO -->
+        <div class="deck-hero">
+            <div class="hero-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M12 20V10M18 20V4M6 20v-4" />
+                </svg>
+                Flight Data Recorder
+            </div>
+            <h1 class="hero-title">Your Statistics</h1>
+            <p class="hero-desc">Review your training data, track category mastery, and get actionable study
+                recommendations from ACE.</p>
+        </div>
+
+        <!-- STATS HERO CARD -->
+        <div class="holo-card stats-hero-card anim-1" id="heroCard">
+            <div class="card-bg-gfx"></div>
+            <div class="card-content">
+                <div class="stats-row" id="statsRow"><!-- JS --></div>
+            </div>
+        </div>
+
+        <!-- ROW 1: RADAR + XP -->
+        <div class="section-label anim-2">Category Mastery</div>
+        <div class="deck-grid anim-2">
+            <div class="holo-card card-radar" id="cardRadar">
+                <div class="card-bg-gfx"></div>
+                <div class="card-content">
+                    <div class="card-hdr">
+                        <div class="card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
+                            </svg></div>
+                        <div>
+                            <div class="card-hdr-title">Mastery Radar</div>
+                            <div class="card-hdr-sub">8 CAET Categories</div>
+                        </div>
+                    </div>
+                    <div class="radar-wrap" id="radarWrap"></div>
+                </div>
+            </div>
+            <div class="holo-card card-xp" id="cardXP">
+                <div class="card-bg-gfx"></div>
+                <div class="card-content">
+                    <div class="card-hdr">
+                        <div class="card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M12 20V10M18 20V4M6 20v-4" />
+                            </svg></div>
+                        <div>
+                            <div class="card-hdr-title">XP by Category</div>
+                            <div class="card-hdr-sub">Effort distribution</div>
+                        </div>
+                    </div>
+                    <div id="xpContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 2: TIMELINE -->
+        <div class="section-label anim-3">Exam Readiness Timeline</div>
+        <div class="deck-grid anim-3">
+            <div class="holo-card card-journey full-span" id="cardJourney">
+                <div class="card-bg-gfx"></div>
+                <div class="card-content">
+                    <div class="card-hdr">
+                        <div class="card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg></div>
+                        <div>
+                            <div class="card-hdr-title">Your Journey</div>
+                        </div>
+                        <span
+                            style="margin-left:auto;font-family:var(--font-mono);font-size:13px;color:var(--text-muted);"
+                            id="timeEst"></span>
+                    </div>
+                    <div class="mile-strip" id="mileStip"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ROW 2.5: ACTIVITY STATS — Jeopardy, Drill, Journey -->
+        <div class="section-label anim-3">Activity & Performance</div>
+        <div class="deck-grid anim-3" style="grid-template-columns: repeat(3, 1fr);">
+            <!-- Jeopardy -->
+            <div class="holo-card" style="overflow:hidden;">
+                <div class="card-bg-gfx"></div>
+                <div class="card-content">
+                    <div class="card-hdr">
+                        <div class="card-icon-wrap" style="background:rgba(239,68,68,0.12);"><span
+                                style="font-size:20px;">⚡</span></div>
+                        <div>
+                            <div class="card-hdr-title">Battle ACE</div>
+                            <div class="card-hdr-sub">Jeopardy stats</div>
+                        </div>
+                    </div>
+                    <div id="jeopardyStats" style="padding-top:12px;"></div>
+                </div>
+            </div>
+            <!-- Drill -->
+            <div class="holo-card" style="overflow:hidden;">
+                <div class="card-bg-gfx"></div>
+                <div class="card-content">
+                    <div class="card-hdr">
+                        <div class="card-icon-wrap" style="background:rgba(59,130,246,0.12);"><span
+                                style="font-size:20px;">🎯</span></div>
+                        <div>
+                            <div class="card-hdr-title">Drill Mode</div>
+                            <div class="card-hdr-sub">Practice accuracy</div>
+                        </div>
+                    </div>
+                    <div id="drillStats" style="padding-top:12px;"></div>
+                </div>
+            </div>
+            <!-- Journey Progress -->
+            <div class="holo-card" style="overflow:hidden;">
+                <div class="card-bg-gfx"></div>
+                <div class="card-content">
+                    <div class="card-hdr">
+                        <div class="card-icon-wrap" style="background:rgba(16,185,129,0.12);"><span
+                                style="font-size:20px;">🗺️</span></div>
+                        <div>
+                            <div class="card-hdr-title">Journey</div>
+                            <div class="card-hdr-sub">Lesson completion</div>
+                        </div>
+                    </div>
+                    <div id="journeyStats" style="padding-top:12px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 3: FLASHCARDS + LO -->
+        <div class="section-label anim-4">Memory & Knowledge</div>
+        <div class="deck-grid anim-4">
+            <div class="holo-card card-fc" id="cardFC">
+                <div class="card-bg-gfx"></div>
+                <div class="card-content">
+                    <div class="card-hdr">
+                        <div class="card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="3" width="20" height="14" rx="2" />
+                                <line x1="8" y1="21" x2="16" y2="21" />
+                                <line x1="12" y1="17" x2="12" y2="21" />
+                            </svg></div>
+                        <div>
+                            <div class="card-hdr-title">Flashcard Health</div>
+                            <div class="card-hdr-sub">SM-2 spaced repetition</div>
+                        </div>
+                    </div>
+                    <div id="fcContent"></div>
+                </div>
+            </div>
+            <div class="holo-card card-lo" id="cardLO">
+                <div class="card-bg-gfx"></div>
+                <div class="card-content">
+                    <div class="card-hdr">
+                        <div class="card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                            </svg></div>
+                        <div>
+                            <div class="card-hdr-title">Knowledge Tracing</div>
+                            <div class="card-hdr-sub">Learning objectives</div>
+                        </div>
+                    </div>
+                    <div id="loContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 4: RECS -->
+        <div class="deck-grid anim-4" style="margin-top:24px;">
+            <div class="holo-card card-rec full-span" style="max-width:900px;" id="cardRec">
+                <div class="card-bg-gfx"></div>
+                <div class="card-content">
+                    <div class="card-hdr">
+                        <div class="card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                            </svg></div>
+                        <div>
+                            <div class="card-hdr-title">Study Coach</div>
+                            <div class="card-hdr-sub">ACE's training recommendations</div>
+                        </div>
+                    </div>
+                    <div id="recContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <a href="../dashboard.html" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Return to Hub
+        </a>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const CATS = [
+                { id: 'cat-1', n: 'MRD', name: 'Maint Regs & Docs', c: '#D4A853', t: ['maintenance-regs'] },
+                { id: 'cat-2', n: 'BET', name: 'Basic Electrical', c: '#60a5fa', t: ['electricity-dc', 'electricity-ac', 'electricity-solid', 'maintenance-electrical'] },
+                { id: 'cat-3', n: 'CNS', name: 'CNS Systems', c: '#c084fc', t: ['avionics-comm', 'avionics-nav', 'avionics-surv'] },
+                { id: 'cat-4', n: 'FI', name: 'Flight Instruments', c: '#60a5fa', t: ['avionics-inst'] },
+                { id: 'cat-5', n: 'DDS', name: 'Digital Databus', c: '#D4A853', t: ['electricity-digital'] },
+                { id: 'cat-6', n: 'AWH', name: 'Aircraft Wiring', c: '#60a5fa', t: ['maintenance-harness'] },
+                { id: 'cat-7', n: 'TTE', name: 'Tools & Test Equip', c: '#D4A853', t: ['tools-test-equipment'] },
+                { id: 'cat-8', n: 'SSP', name: 'Shop Safety', c: '#60a5fa', t: ['maintenance-safety'] },
+            ];
+            const TM = CATS.reduce((s, c) => s + c.t.length, 0);
+            const ls = (k, fb = null) => { try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : fb; } catch (e) { return fb; } };
+            const catXP = id => ls(`ace_cat_${id}_xp`, 0);
+            const modDone = (c, m) => localStorage.getItem(`ace_cat_${c}_training_${m}_complete`) === 'true';
+            function xpLvl(xp) { let l = 1, th = 500; while (xp >= th) { xp -= th; l++; th = 500 * l; } return { l, c: xp, r: th }; }
+            function grade(a) { if (a >= 95) return 'A+'; if (a >= 90) return 'A'; if (a >= 85) return 'B+'; if (a >= 80) return 'B'; if (a >= 75) return 'C+'; if (a >= 70) return 'C'; if (a >= 60) return 'D'; return 'F'; }
+            function gCls(g) { if (g === '—') return ''; if (g[0] === 'A') return 'grade-a'; if (g[0] === 'B') return 'grade-b'; if (g[0] === 'C') return 'grade-c'; if (g === 'D') return 'grade-d'; return 'grade-f'; }
+            function bCls(p) { return p >= 80 ? 'h' : p >= 60 ? 'm' : 'l'; }
+
+            // ── COMPUTE MASTERY FROM ALL AVAILABLE DATA SOURCES ──
+            // Source 1: Existing ace_cat_*_mastery keys (if any)
+            // Source 2: LO mastery data from drill sessions (ace_lo_mastery_*)
+            // Source 3: Diagnostic pre-assessment baseline
+            function computeCatMastery(catId) {
+                // Check if explicit mastery is already stored
+                const explicit = ls(`ace_cat_${catId}_mastery`, null);
+                if (explicit !== null && explicit > 0) return explicit;
+
+                // Aggregate from LO mastery data written by drill
+                let loCorrect = 0, loTotal = 0;
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (!k || !k.startsWith('ace_lo_mastery_')) continue;
+                    try {
+                        const d = JSON.parse(localStorage.getItem(k));
+                        // LO key format: ace_lo_mastery_{lessonId}_{loId}
+                        // Check if this LO belongs to a lesson in this category
+                        const cat = CATS.find(c => c.id === catId);
+                        if (cat && cat.t.some(t => k.includes(t))) {
+                            loCorrect += (d.correct || 0);
+                            loTotal += (d.total || 0);
+                        }
+                    } catch (e) { }
+                }
+                if (loTotal > 0) {
+                    const pct = Math.round((loCorrect / loTotal) * 100);
+                    // Cache it for next load
+                    try { localStorage.setItem(`ace_cat_${catId}_mastery`, JSON.stringify(pct)); } catch (e) { }
+                    return pct;
+                }
+
+                // Fall back to diagnostic baseline
+                const baseline = ls('caet-diagnostic-baseline', null);
+                if (baseline && baseline.categories) {
+                    const match = baseline.categories.find(c => c.id === catId);
+                    if (match) return match.pct;
+                }
+
+                return 0;
+            }
+
+            const xp = ls('ace_xp_total', 0), lv = xpLvl(xp), streak = ls('ace_streak_days', 0);
+            const masts = CATS.map(c => computeCatMastery(c.id));
+            const hasAnyData = masts.some(m => m > 0) || xp > 0;
+            const avg = hasAnyData ? Math.round(masts.reduce((a, b) => a + b, 0) / CATS.length) : 0;
+            const g = hasAnyData ? grade(avg) : '—';
+            let md = 0; CATS.forEach(c => c.t.forEach(m => { if (modDone(c.id, m)) md++; }));
+            const eb = ls('ace_final_exam_best', null);
+
+            // 1. HERO STATS
+            let h = `<div class="stat-block"><div class="stat-val">LVL ${lv.l}</div><div class="stat-label">Level</div></div>
+            <div class="stat-divider"></div>
+            <div class="stat-block"><div class="stat-val">${xp.toLocaleString()}</div><div class="stat-label">Total XP</div></div>
+            <div class="stat-divider"></div>
+            <div class="stat-block"><div class="stat-val ${gCls(g)}">${g}</div><div class="stat-label">Readiness</div></div>
+            <div class="stat-divider"></div>
+            <div class="stat-block"><div class="stat-val">${streak}</div><div class="stat-label">Day Streak</div></div>
+            <div class="stat-divider"></div>
+            <div class="stat-block"><div class="stat-val">${md}/${TM}</div><div class="stat-label">Modules</div></div>`;
+            if (eb !== null) h += `<div class="stat-divider"></div><div class="stat-block"><div class="stat-val">${eb}%</div><div class="stat-label">Exam Best</div></div>`;
+            document.getElementById('statsRow').innerHTML = h;
+
+            // Time est
+            let est = 0; CATS.forEach((c, ci) => { c.t.forEach(m => { if (!modDone(c.id, m)) est += 2; }); if (masts[ci] < 70) est += 1.5; });
+            document.getElementById('timeEst').textContent = est <= 0 ? 'Exam ready!' : est < 1 ? '< 1 hr remaining' : `~${Math.round(est)} hrs remaining`;
+
+            // 2. RADAR
+            (function () {
+                const el = document.getElementById('radarWrap'), sz = 320, cx = sz / 2, cy = sz / 2, R = 120, n = CATS.length, as = 2 * Math.PI / n;
+                const pol = (a, r) => ({ x: cx + r * Math.cos(a - Math.PI / 2), y: cy + r * Math.sin(a - Math.PI / 2) });
+                let s = `<svg viewBox="0 0 ${sz} ${sz}" width="${sz}" height="${sz}" style="max-width:100%;">`;
+                [25, 50, 75, 100].forEach(lv => { let pts = []; for (let i = 0; i < n; i++) { const p = pol(i * as, (lv / 100) * R); pts.push(`${p.x},${p.y}`); } s += `<polygon points="${pts.join(' ')}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`; });
+                for (let i = 0; i < n; i++) { const p = pol(i * as, R); s += `<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>`; }
+                let dp = []; for (let i = 0; i < n; i++) { const v = Math.max(masts[i], 2), p = pol(i * as, (v / 100) * R); dp.push(`${p.x},${p.y}`); }
+                s += `<polygon points="${dp.join(' ')}" fill="rgba(212,168,83,0.15)" stroke="rgba(212,168,83,0.8)" stroke-width="2"/>`;
+                for (let i = 0; i < n; i++) { const v = Math.max(masts[i], 2), p = pol(i * as, (v / 100) * R); s += `<circle cx="${p.x}" cy="${p.y}" r="4" fill="${CATS[i].c}" stroke="rgba(0,0,0,0.5)" stroke-width="1"/>`; const lp = pol(i * as, R + 22), a2 = Math.abs(lp.x - cx) < 5 ? 'middle' : lp.x < cx ? 'end' : 'start'; s += `<text x="${lp.x}" y="${lp.y}" text-anchor="${a2}" dominant-baseline="middle" fill="var(--text-muted)" font-size="11" font-weight="700">${CATS[i].n}</text>`; const vp = pol(i * as, R + 36); s += `<text x="${vp.x}" y="${vp.y}" text-anchor="${a2}" dominant-baseline="middle" fill="${CATS[i].c}" font-size="10" font-weight="600">${masts[i]}%</text>`; }
+                s += '</svg>'; el.innerHTML = s;
+            })();
+
+            // 3. XP bars
+            (function () { const el = document.getElementById('xpContent'), mx = Math.max(...CATS.map(c => catXP(c.id)), 1); let h = ''; CATS.forEach(c => { const x = catXP(c.id), p = Math.round((x / mx) * 100); h += `<div class="cat-row"><span class="cat-label">${c.n}</span><div class="cat-bar"><div class="cat-fill" style="width:${p}%;background:${c.c};opacity:0.7;"></div></div><span class="cat-val">${x.toLocaleString()} XP</span></div>`; }); el.innerHTML = h || '<div class="empty">No XP earned yet.</div>'; })();
+
+            // 4. Milestones
+            (function () {
+                const el = document.getElementById('mileStip'); let fcD = {}; try { fcD = JSON.parse(localStorage.getItem('glossary.mastery')) || {}; } catch (e) { }
+                const fcT = Object.keys(fcD).length, fcM = Object.values(fcD).filter(d => d.ease && d.ease >= 2.5 && d.interval && d.interval >= 21).length;
+                const cp = masts.filter(m => m >= 70).length;
+                const ms = [
+                    { l: 'Modules', v: `${Math.round((md / TM) * 100)}%`, d: md >= TM },
+                    { l: 'Categories ≥70%', v: `${cp}/8`, d: cp >= 8 },
+                    { l: 'Cards Mastered', v: fcT > 0 ? `${Math.round((fcM / fcT) * 100)}%` : '0%', d: fcT > 0 && fcM >= fcT * 0.8 },
+                    { l: 'Mock Exam', v: eb !== null ? eb + '%' : '—', d: eb !== null && eb >= 70 },
+                    { l: 'Exam Ready', v: g, d: avg >= 80 }
+                ];
+                let h = ''; ms.forEach((m, i) => { if (i > 0) h += `<div class="mile-conn${m.d && ms[i - 1].d ? ' done' : ''}"></div>`; h += `<div class="mile"><div class="mile-dot${m.d ? ' done' : ''}">${m.v}</div><div class="mile-lbl">${m.l}</div></div>`; });
+                el.innerHTML = h;
+            })();
+
+            // 5. Flashcard health
+            (function () {
+                const el = document.getElementById('fcContent'); let fcD = {}; try { fcD = JSON.parse(localStorage.getItem('glossary.mastery')) || {}; } catch (e) { }
+                const ents = Object.entries(fcD), tot = ents.length;
+                if (!tot) { el.innerHTML = '<div class="empty">No flashcard data yet. Complete sessions to see memory health.</div>'; return; }
+                const now = Date.now(), DAY = 864e5; let ma = 0, le = 0, nw = 0, od = 0, dt = 0, es = 0;
+                ents.forEach(([_, d]) => { es += (d.ease || 2.5); if (d.interval && d.interval >= 21 && d.ease >= 2.5) ma++; else if (d.reps && d.reps > 0) le++; else nw++; if (d.due && d.due < now) od++; else if (d.due && d.due < now + DAY) dt++; });
+                const ae = (es / tot).toFixed(2), r = 50, ci = 2 * Math.PI * r, mP = ma / tot, lP = le / tot, nP = nw / tot;
+                const mD = mP * ci, lD = lP * ci, nD = nP * ci;
+                const svg = `<svg viewBox="0 0 140 140" width="140" height="140"><circle cx="70" cy="70" r="${r}" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="16"/><circle cx="70" cy="70" r="${r}" fill="none" stroke="#34d399" stroke-width="16" stroke-dasharray="${mD} ${ci}" stroke-dashoffset="0" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="${r}" fill="none" stroke="#fbbf24" stroke-width="16" stroke-dasharray="${lD} ${ci}" stroke-dashoffset="${-mD}" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="${r}" fill="none" stroke="#60a5fa" stroke-width="16" stroke-dasharray="${nD} ${ci}" stroke-dashoffset="${-(mD + lD)}" transform="rotate(-90 70 70)"/><text x="70" y="66" text-anchor="middle" fill="white" font-size="20" font-weight="800" font-family="var(--font-mono)">${tot}</text><text x="70" y="82" text-anchor="middle" fill="var(--text-muted)" font-size="10" font-weight="600">TOTAL</text></svg>`;
+                const ec = ae >= 2.5 ? '#34d399' : ae >= 2.0 ? '#fbbf24' : '#f87171', el2 = ae >= 2.5 ? 'Strong' : ae >= 2.0 ? 'Moderate' : 'Fragile';
+                const db = od > 0 ? `<span style="color:#f87171;font-weight:700;">${od} overdue</span>` : dt > 0 ? `<span style="color:#fbbf24;font-weight:700;">${dt} due today</span>` : `<span style="color:#34d399;font-weight:700;">All clear</span>`;
+                el.innerHTML = `<div class="donut-wrap">${svg}<div class="donut-legend"><div class="donut-item"><div class="donut-dot" style="background:#34d399"></div>Mastered<span class="donut-num">${ma}</span></div><div class="donut-item"><div class="donut-dot" style="background:#fbbf24"></div>Learning<span class="donut-num">${le}</span></div><div class="donut-item"><div class="donut-dot" style="background:#60a5fa"></div>New<span class="donut-num">${nw}</span></div></div></div><div class="gauge-row" style="margin-top:16px;"><span class="gauge-lab">Memory Strength</span><div class="gauge-bg"><div class="gauge-fill" style="width:${Math.round((ae / 3.5) * 100)}%;background:${ec};"></div></div><span class="gauge-val" style="color:${ec}">${el2}</span></div><div class="gauge-row"><span class="gauge-lab">Review Status</span><div style="flex:1;">${db}</div></div>`;
+            })();
+
+            // 6. LO
+            (function () {
+                const el = document.getElementById('loContent'), loD = {};
+                for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith('caet_lo_scores_')) { try { Object.assign(loD, JSON.parse(localStorage.getItem(k))); } catch (e) { } } }
+                const en = Object.entries(loD); if (!en.length) { el.innerHTML = '<div class="empty">No LO data yet. Complete training to track knowledge.</div>'; return; }
+                en.sort((a, b) => (a[1].bestPercent || 0) - (b[1].bestPercent || 0)); let h = '';
+                en.slice(0, 8).forEach(([o, d]) => { const p = d.bestPercent || 0, c = bCls(p); h += `<div class="lo-item"><div class="lo-hdr"><span class="lo-name" title="${o}">${o}</span><span class="lo-pct pct-${c}">${p}%</span></div><div class="lo-bg"><div class="lo-fill fill-${c}" style="width:${p}%"></div></div></div>`; });
+                if (en.length > 8) h += `<div style="text-align:center;color:var(--text-muted);font-size:12px;margin-top:12px;">+ ${en.length - 8} more tracked</div>`;
+                el.innerHTML = h;
+            })();
+
+
+            // ACTIVITY STATS
+            (function () {
+                // Jeopardy
+                var ss = {}; try { ss = JSON.parse(localStorage.getItem('caet_summary_stats')) || {}; } catch (e) { }
+                var jp = ss.jeopardy || {};
+                var jGames = jp.gamesPlayed || 0;
+                var jWins = jp.wins || 0;
+                var jMoney = jp.totalMoneyEarned || 0;
+                var jTiles = jp.tilesAnswered || 0;
+                var jCorrect = jp.correctTiles || 0;
+                var jAcc = jTiles > 0 ? Math.round((jCorrect / jTiles) * 100) : 0;
+                var jEl = document.getElementById('jeopardyStats');
+                if (jEl) {
+                    jEl.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">' +
+                        '<div style="text-align:center;padding:10px;background:rgba(255,255,255,0.03);border-radius:10px;"><div style="font-size:22px;font-weight:800;color:#10b981;">$' + jMoney.toLocaleString() + '</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:1px;">Earnings</div></div>' +
+                        '<div style="text-align:center;padding:10px;background:rgba(255,255,255,0.03);border-radius:10px;"><div style="font-size:22px;font-weight:800;color:#D4A853;">' + jWins + '<span style="font-size:14px;color:#52525b;">/' + jGames + '</span></div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:1px;">Wins</div></div>' +
+                        '<div style="text-align:center;padding:10px;background:rgba(255,255,255,0.03);border-radius:10px;"><div style="font-size:22px;font-weight:800;color:#3b82f6;">' + jTiles + '</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:1px;">Tiles</div></div>' +
+                        '<div style="text-align:center;padding:10px;background:rgba(255,255,255,0.03);border-radius:10px;"><div style="font-size:22px;font-weight:800;color:' + (jAcc >= 70 ? '#10b981' : '#fbbf24') + ';">' + jAcc + '%</div><div style="font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:1px;">Accuracy</div></div>' +
+                        '</div>';
+                    if (jGames === 0) jEl.innerHTML = '<div style="color:#52525b;text-align:center;padding:16px;font-size:13px;">No games played yet.<br><a href="jeopardy.html" style="color:#D4A853;">Challenge Ace →</a></div>';
+                }
+
+                // Drill
+                var pr = ss.practice || {};
+                var dGot = pr.gotIt || 0;
+                var dMiss = pr.missedIt || 0;
+                var dTotal = dGot + dMiss;
+                var dAcc = dTotal > 0 ? Math.round((dGot / dTotal) * 100) : 0;
+                var dEl = document.getElementById('drillStats');
+                if (dEl) {
+                    if (dTotal > 0) {
+                        var r = 40, ci = 2 * Math.PI * r, off = ci - (dAcc / 100) * ci;
+                        var acColor = dAcc >= 80 ? '#10b981' : dAcc >= 60 ? '#fbbf24' : '#ef4444';
+                        dEl.innerHTML = '<div style="text-align:center;">' +
+                            '<svg viewBox="0 0 100 100" width="100" height="100" style="margin-bottom:8px;"><circle cx="50" cy="50" r="' + r + '" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/><circle cx="50" cy="50" r="' + r + '" fill="none" stroke="' + acColor + '" stroke-width="10" stroke-dasharray="' + ci.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '" stroke-linecap="round" transform="rotate(-90 50 50)"/><text x="50" y="46" text-anchor="middle" fill="' + acColor + '" font-size="18" font-weight="800">' + dAcc + '%</text><text x="50" y="60" text-anchor="middle" fill="#6b7280" font-size="8" font-weight="600">ACCURACY</text></svg>' +
+                            '<div style="display:flex;justify-content:center;gap:16px;font-size:12px;">' +
+                            '<span style="color:#10b981;">✓ ' + dGot + ' correct</span>' +
+                            '<span style="color:#ef4444;">✗ ' + dMiss + ' missed</span>' +
+                            '</div></div>';
+                    } else {
+                        dEl.innerHTML = '<div style="color:#52525b;text-align:center;padding:16px;font-size:13px;">No drills completed yet.<br><a href="drill.html" style="color:#3b82f6;">Start drilling →</a></div>';
+                    }
+                }
+
+                // Journey Progress
+                var JOURNEY_WORLDS = [
+                    { short: 'Safety', nodes: ['W1-Z1-N1', 'W1-Z1-N2', 'W1-Z2-N1', 'W1-Z2-N2', 'W1-Z2-N3', 'W1-Z3-N1', 'W1-Z3-N2', 'W1-Z3-N3', 'W1-Z4-N1', 'W1-Z5-N1', 'W1-Z5-N2'] },
+                    { short: 'Regulations', nodes: ['W2-Z1-N1', 'W2-Z1-N2', 'W2-Z2-N1', 'W2-Z2-N2', 'W2-Z2-N3', 'W2-Z3-N1', 'W2-Z4-N1', 'W2-Z4-N2', 'W2-Z5-N1', 'W2-Z5-N2'] },
+                    { short: 'Electrical', nodes: ['W3-Z1-N1', 'W3-Z1-N2', 'W3-Z2-N1', 'W3-Z2-N2', 'W3-Z3-N1', 'W3-Z3-N2', 'W3-Z3-N3', 'W3-Z4-N1'] },
+                    { short: 'Tools', nodes: ['W4-Z1-N1', 'W4-Z2-N1', 'W4-Z3-N1', 'W4-Z3-N2', 'W4-Z4-N1', 'W4-Z5-N1'] },
+                    { short: 'Wiring', nodes: ['W5-Z1-N1', 'W5-Z1-N2', 'W5-Z2-N1', 'W5-Z2-N2', 'W5-Z3-N1', 'W5-Z3-N2', 'W5-Z3-N3', 'W5-Z4-N1', 'W5-Z4-N2', 'W5-Z4-N3', 'W5-Z5-N1', 'W5-Z5-N2'] },
+                    { short: 'Databus', nodes: ['W6-Z1-N1', 'W6-Z2-N1', 'W6-Z2-N2', 'W6-Z2-N3', 'W6-Z3-N1', 'W6-Z3-N2', 'W6-Z3-N3', 'W6-Z4-N1', 'W6-Z4-N2'] },
+                    { short: 'CNS', nodes: ['W7-Z1-N1', 'W7-Z2-N1', 'W7-Z2-N2', 'W7-Z3-N1', 'W7-Z3-N2', 'W7-Z3-N3', 'W7-Z4-N1', 'W7-Z5-N1', 'W7-Z5-N2'] },
+                    { short: 'Instruments', nodes: ['W8-Z1-N1', 'W8-Z2-N1', 'W8-Z3-N1', 'W8-Z4-N1', 'W8-Z5-N1'] }
+                ];
+                var totalNodes = 0, doneNodes = 0;
+                var jRows = '';
+                JOURNEY_WORLDS.forEach(function (w) {
+                    var done = w.nodes.filter(function (n) { return localStorage.getItem('completed_' + n) === 'true'; }).length;
+                    totalNodes += w.nodes.length;
+                    doneNodes += done;
+                    var pct = Math.round((done / w.nodes.length) * 100);
+                    var color = pct >= 75 ? '#10b981' : pct > 0 ? '#D4A853' : '#3f3f46';
+                    jRows += '<div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><span style="font-size:11px;color:#8891a8;width:70px;">' + w.short + '</span><div style="flex:1;height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:' + color + ';border-radius:3px;transition:width 0.5s;"></div></div><span style="font-size:11px;font-weight:600;color:' + color + ';width:30px;text-align:right;">' + pct + '%</span></div>';
+                });
+                var overallPct = totalNodes > 0 ? Math.round((doneNodes / totalNodes) * 100) : 0;
+                var jEl = document.getElementById('journeyStats');
+                if (jEl) {
+                    jEl.innerHTML = '<div style="text-align:center;margin-bottom:10px;"><span style="font-size:24px;font-weight:800;color:' + (overallPct >= 75 ? '#10b981' : '#D4A853') + ';">' + overallPct + '%</span><span style="font-size:11px;color:#6b7280;margin-left:6px;">overall</span></div>' + jRows;
+                    if (doneNodes === 0) jEl.innerHTML = '<div style="color:#52525b;text-align:center;padding:16px;font-size:13px;">No lessons completed yet.<br><a href="../journey.html" style="color:#10b981;">Start the Journey →</a></div>';
+                }
+            })();
+
+            // 7. Recommendations
+            (function () {
+                const el = document.getElementById('recContent'); let h = '';
+                let wi = 0; masts.forEach((m, i) => { if (m < masts[wi]) wi = i; });
+                if (masts[wi] < 70) h += `<div class="rec rec-w"><div class="rec-title" style="color:#fbbf24;">⚡ Weakest Category</div><div class="rec-text"><strong>${CATS[wi].name}</strong> is at <strong>${masts[wi]}%</strong> mastery. Focus drill sessions here for max exam impact.</div></div>`;
+                const loD = {}; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith('caet_lo_scores_')) { try { Object.assign(loD, JSON.parse(localStorage.getItem(k))); } catch (e) { } } }
+                const wk = Object.entries(loD).filter(([_, d]) => (d.bestPercent || 0) < 70);
+                if (wk.length > 0) h += `<div class="rec rec-d"><div class="rec-title" style="color:#f87171;">⚠ Knowledge Gaps</div><div class="rec-text"><strong>${wk.length}</strong> learning objective(s) below 70%. Review training manual sections, then run a targeted flashcard drill.</div></div>`;
+                let fcD = {}; try { fcD = JSON.parse(localStorage.getItem('glossary.mastery')) || {}; } catch (e) { }
+                const d24 = Object.values(fcD).filter(d => d.due && d.due < Date.now() + 864e5).length;
+                if (d24 > 5) h += `<div class="rec rec-i"><div class="rec-title" style="color:#60a5fa;">📥 Review Backlog</div><div class="rec-text"><strong>${d24} flashcards</strong> due within 24 hours. A quick 5-min session keeps retention on track.</div></div>`;
+                const im = TM - md; if (im > 0 && im <= 5) h += `<div class="rec rec-i"><div class="rec-title" style="color:#60a5fa;">📚 Almost There</div><div class="rec-text">Only <strong>${im} module(s)</strong> remaining. Completing all modules significantly improves exam outcomes.</div></div>`;
+                if (!h && avg >= 80 && md >= TM) h = `<div class="rec rec-s"><div class="rec-title" style="color:#34d399;">✓ Ready for Certification</div><div class="rec-text">Your mastery, modules, and retention all indicate strong readiness. You're statistically prepared for the CAET exam.</div></div>`;
+                else if (!h) h = '<div class="empty">Keep studying! More data unlocks personalized recommendations.</div>';
+                el.innerHTML = h;
+            })();
+        });
+    </script>
+
+    <!-- 3D Holographic Tilt — matches journey/practice exactly -->
+    <script>
+        document.querySelectorAll('.holo-card').forEach(card => {
+            let rafId, currentX = 0, currentY = 0, targetX = 0, targetY = 0;
+            const ease = 0.1, maxRot = 6;
+            function animate() {
+                currentX += (targetX - currentX) * ease; currentY += (targetY - currentY) * ease;
+                card.style.transform = `perspective(1000px) rotateX(${currentY * maxRot}deg) rotateY(${currentX * -maxRot}deg) scale3d(1.02,1.02,1.02)`;
+                rafId = requestAnimationFrame(animate);
+            }
+            card.addEventListener('mouseenter', () => { cancelAnimationFrame(rafId); animate(); });
+            card.addEventListener('mousemove', e => { const r = card.getBoundingClientRect(); targetX = ((e.clientX - r.left) / r.width) * 2 - 1; targetY = ((e.clientY - r.top) / r.height) * 2 - 1; });
+            card.addEventListener('mouseleave', () => { cancelAnimationFrame(rafId); card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)'; targetX = 0; targetY = 0; currentX = 0; currentY = 0; });
+        });
+    </script>
+    <script src="js/ace-auth.js"></script>
+</body>
+
+</html>

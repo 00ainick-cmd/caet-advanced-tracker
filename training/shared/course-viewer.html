@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rise Module Player</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0d1117;
+            --bg-card: #12121a;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.4);
+            --module-color: #00E5FF;
+            --module-glow: rgba(0, 229, 255, 0.4);
+            --success: #00ff41;
+            --warning: #f59e0b;
+            --gold: #d4a853;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-dark);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .rise-control-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(20, 24, 38, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 1000;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .back-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .module-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .module-title::before {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 16px;
+            background: linear-gradient(to bottom, var(--gold), #61AFEF);
+            border-radius: 2px;
+        }
+
+        .timer-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .focus-tool {
+            display: flex;
+            align-items: stretch;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: visible;
+        }
+
+        .focus-study {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+        }
+
+        .timer-icon {
+            font-size: 18px;
+        }
+
+        .timer-display {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .timer-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+
+        .timer-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--success);
+            line-height: 1.2;
+        }
+
+        .pomodoro-widget {
+            position: relative;
+        }
+
+        .pomodoro-btn {
+            width: 40px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 99, 71, 0.1);
+            border: none;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .pomodoro-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .pomodoro-btn:hover {
+            background: rgba(255, 99, 71, 0.2);
+        }
+
+        .pomodoro-btn.active {
+            background: rgba(255, 99, 71, 0.3);
+        }
+
+        .pomodoro-panel {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            background: rgba(20, 24, 38, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 99, 71, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            min-width: 180px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .pomodoro-panel.visible {
+            display: block;
+        }
+
+        .pomodoro-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 32px;
+            font-weight: 700;
+            color: #ff6347;
+            text-align: center;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .pomodoro-display.running {
+            animation: pomoPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pomoPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .pomodoro-controls {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .pomo-ctrl-btn {
+            width: 44px;
+            height: 36px;
+            background: rgba(255, 99, 71, 0.1);
+            border: 1px solid rgba(255, 99, 71, 0.3);
+            border-radius: 8px;
+            color: #ff6347;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pomo-ctrl-btn:hover {
+            background: rgba(255, 99, 71, 0.2);
+        }
+
+        .pomo-ctrl-btn.playing {
+            background: rgba(255, 99, 71, 0.3);
+        }
+
+        .pomodoro-presets {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .pomo-preset {
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pomo-preset:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .flight-path-container {
+            margin: 8px 0 24px 0;
+            padding: 0 10px;
+            display: none;
+        }
+
+        .pomodoro-panel.visible .flight-path-container {
+            display: block;
+        }
+
+        .flight-path-label {
+            font-size: 10px;
+            color: var(--gold);
+            text-transform: uppercase;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .flight-path-track {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .flight-path-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--success);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 1s linear;
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .flight-airplane {
+            position: absolute;
+            right: -12px;
+            top: -8px;
+            color: var(--success);
+            filter: drop-shadow(0 0 5px rgba(0, 255, 65, 0.6));
+            transition: all 0.3s ease;
+        }
+
+        .flight-airplane svg {
+            width: 20px;
+            height: 20px;
+            transform: rotate(45deg);
+        }
+
+        .notes-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .notes-btn:hover {
+            background: rgba(212, 168, 83, 0.15);
+            border-color: rgba(212, 168, 83, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .notes-btn svg {
+            width: 16px;
+            height: 16px;
+            color: var(--gold);
+        }
+
+        .pomo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .pomo-title {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .pomo-info {
+            color: var(--text-muted);
+            cursor: help;
+            display: flex;
+            transition: color 0.2s;
+        }
+
+        .pomo-info:hover {
+            color: var(--gold);
+        }
+
+        .pomo-info svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .notes-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notes-action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .notes-action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .notes-subheader {
+            padding: 0 24px;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 16px;
+        }
+
+        /* Tooltip */
+        .pomo-info-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .pomo-tooltip {
+            visibility: hidden;
+            width: 250px;
+            background-color: rgba(20, 24, 38, 0.95);
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 12px;
+            position: absolute;
+            z-index: 1001;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 11px;
+            line-height: 1.4;
+            font-weight: normal;
+            text-transform: none;
+            pointer-events: none;
+        }
+
+        .pomo-info-wrapper:hover .pomo-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Notes Toolbar */
+        .notes-toolbar {
+            display: flex;
+            gap: 4px;
+            padding: 8px 24px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .toolbar-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Formula Drawer */
+        .formula-drawer {
+            display: none;
+            position: absolute;
+            top: 120px;
+            right: 390px;
+            width: 250px;
+            background: rgba(20, 24, 38, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            z-index: 1000;
+            box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .formula-drawer.open {
+            display: block;
+        }
+
+        .formula-item {
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .formula-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--gold);
+            border-color: rgba(212, 168, 83, 0.3);
+        }
+
+        .formula-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .formula-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .formula-close:hover {
+            color: white;
+        }
+
+        /* XP Float */
+        .xp-float {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 18px;
+            pointer-events: none;
+            animation: floatUp 2s ease-out forwards;
+            text-shadow: 0 0 10px rgba(212, 168, 83, 0.5);
+            z-index: 1002;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, 10px) scale(0.8);
+            }
+
+            20% {
+                opacity: 1;
+                transform: translate(-50%, 0) scale(1.1);
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -40px) scale(1);
+            }
+        }
+
+        .notes-panel {
+            position: fixed;
+            top: 60px;
+            right: -400px;
+            width: 380px;
+            bottom: 0;
+            background: rgba(20, 24, 38, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 999;
+            transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .notes-panel.open {
+            right: 0;
+        }
+
+        .notes-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .notes-header h3 {
+            font-size: 15px;
+            color: var(--gold);
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .close-notes {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close-notes:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .notes-body {
+            flex: 1;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notes-textarea {
+            flex: 1;
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+        }
+
+        .notes-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .keyboard-hint {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .keyboard-hint kbd {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        .rise-container {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+        }
+
+        .rise-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-joke {
+            font-size: 14px;
+            color: var(--text-muted);
+            max-width: 400px;
+            text-align: center;
+            font-style: italic;
+            animation: fadeInOut 3s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .ace-loading-container {
+            position: relative;
+            width: 192px;
+            height: 192px;
+            margin-bottom: 5px;
+        }
+
+        .ace-loading-sprite {
+            width: 192px;
+            height: 192px;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        .ace-loading-steam {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 192px;
+            height: 192px;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        .ace-speech-bubble {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            color: #1a1a2e;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            animation: bobble 2s ease-in-out infinite;
+        }
+
+        .ace-speech-bubble::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid rgba(255, 255, 255, 0.95);
+        }
+
+        @keyframes bobble {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            font-size: 15px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .module-title {
+                display: none;
+            }
+
+            .keyboard-hint {
+                display: none;
+            }
+
+            .pomo-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 8px;
+            }
+
+            .pomo-title {
+                font-size: 11px;
+                color: var(--text-secondary);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-weight: 600;
+            }
+
+            .pomo-info {
+                color: var(--text-muted);
+                cursor: help;
+                display: flex;
+                transition: color 0.2s;
+            }
+
+            .pomo-info:hover {
+                color: var(--gold);
+            }
+
+            .pomo-info svg {
+                width: 14px;
+                height: 14px;
+            }
+
+            .notes-actions {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .notes-action-btn {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 6px;
+                color: var(--text-secondary);
+                width: 28px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .notes-action-btn:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                border-color: rgba(255, 255, 255, 0.2);
+            }
+
+            .notes-subheader {
+                padding: 0 24px;
+                font-size: 12px;
+                color: var(--text-muted);
+                line-height: 1.5;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                padding-bottom: 16px;
+            }
+
+            /* Tooltip */
+            .pomo-info-wrapper {
+                position: relative;
+                display: inline-block;
+            }
+
+            .pomo-tooltip {
+                visibility: hidden;
+                width: 250px;
+                background-color: rgba(20, 24, 38, 0.95);
+                color: #fff;
+                text-align: left;
+                border-radius: 8px;
+                padding: 12px;
+                position: absolute;
+                z-index: 1001;
+                bottom: 125%;
+                left: 50%;
+                transform: translateX(-50%);
+                opacity: 0;
+                transition: opacity 0.3s;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                font-size: 11px;
+                line-height: 1.4;
+                font-weight: normal;
+                text-transform: none;
+                pointer-events: none;
+            }
+
+            .pomo-info-wrapper:hover .pomo-tooltip {
+                visibility: visible;
+                opacity: 1;
+            }
+
+            /* Notes Toolbar */
+            .notes-toolbar {
+                display: flex;
+                gap: 4px;
+                padding: 8px 24px;
+                background: rgba(0, 0, 0, 0.2);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                align-items: center;
+                flex-wrap: wrap;
+            }
+
+            .toolbar-btn {
+                background: transparent;
+                border: 1px solid transparent;
+                color: var(--text-secondary);
+                border-radius: 4px;
+                padding: 4px 8px;
+                cursor: pointer;
+                transition: all 0.2s;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+            .toolbar-btn:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+                border-color: rgba(255, 255, 255, 0.2);
+            }
+
+            /* Formula Drawer */
+            .formula-drawer {
+                display: none;
+                position: absolute;
+                top: 120px;
+                right: 390px;
+                width: 250px;
+                background: rgba(20, 24, 38, 0.95);
+                backdrop-filter: blur(16px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                padding: 12px;
+                z-index: 1000;
+                box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.5);
+            }
+
+            .formula-drawer.open {
+                display: block;
+            }
+
+            .formula-item {
+                padding: 8px;
+                cursor: pointer;
+                border-radius: 4px;
+                border: 1px solid transparent;
+                transition: all 0.2s;
+                margin-bottom: 4px;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 12px;
+                color: var(--text-secondary);
+            }
+
+            .formula-item:hover {
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--gold);
+                border-color: rgba(212, 168, 83, 0.3);
+            }
+
+            .formula-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 8px;
+                font-size: 12px;
+                font-weight: bold;
+                color: white;
+            }
+
+            .formula-close {
+                background: none;
+                border: none;
+                color: var(--text-muted);
+                cursor: pointer;
+            }
+
+            .formula-close:hover {
+                color: white;
+            }
+
+            /* XP Float */
+            .xp-float {
+                position: absolute;
+                top: -30px;
+                left: 50%;
+                transform: translateX(-50%);
+                color: var(--gold);
+                font-weight: bold;
+                font-size: 18px;
+                pointer-events: none;
+                animation: floatUp 2s ease-out forwards;
+                text-shadow: 0 0 10px rgba(212, 168, 83, 0.5);
+                z-index: 1002;
+            }
+
+            @keyframes floatUp {
+                0% {
+                    opacity: 0;
+                    transform: translate(-50%, 10px) scale(0.8);
+                }
+
+                20% {
+                    opacity: 1;
+                    transform: translate(-50%, 0) scale(1.1);
+                }
+
+                80% {
+                    opacity: 1;
+                }
+
+                100% {
+                    opacity: 0;
+                    transform: translate(-50%, -40px) scale(1);
+                }
+            }
+
+            .notes-panel {
+                width: 100%;
+                right: -100%;
+            }
+
+            .rise-control-bar {
+                padding: 0 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="rise-control-bar" id="controlBar">
+        <div class="header-left">
+            <button class="back-button" onclick="goBack()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                </svg>
+                <span>Back</span>
+            </button>
+            <div class="module-title" id="moduleTitle">Loading Course...</div>
+        </div>
+
+        <div class="timer-section">
+            <div class="focus-tool" id="focusToolWidget" style="position: relative;">
+                <!-- Integrated Pomodoro & Study Timer Button -->
+                <div class="focus-study" id="pomodoroToggleMain"
+                    style="cursor: pointer; padding: 6px 16px; border-radius: 10px; transition: background 0.2s;"
+                    title="Focus & Study Timers">
+                    <span class="timer-icon" style="display:flex;align-items:center;">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width:26px;height:26px;margin-right:10px;">
+                            <!-- Tomato Body -->
+                            <circle cx="12" cy="13" r="9" fill="#ff6347" />
+                            <path d="M12 5 L12 2 M10 3 L14 3" stroke="#228B22" stroke-width="2" fill="none" />
+                            <!-- Clock Face inside Tomato -->
+                            <circle cx="12" cy="13" r="6" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.8)"
+                                stroke-width="1.5" />
+                            <path d="M12 10 V13 H14.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                    <div class="timer-display">
+                        <span class="timer-label" style="font-size:11px; color:#ff6347; font-weight:800;">FOCUS
+                            FLIGHT</span>
+                        <span class="timer-value" id="pomodoroDisplay"
+                            style="color: white; font-size:16px;">25:00</span>
+                    </div>
+                </div>
+
+                <!-- Combined Panel -->
+                <div class="pomodoro-panel" id="pomodoroPanel" style="width: 260px;">
+                    <!-- Study Session -->
+                    <div class="pomo-header"
+                        style="flex-direction: column; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; margin-bottom: 16px;">
+                        <span class="pomo-title"
+                            style="font-size: 13px; margin-bottom: 6px; color: var(--text-secondary);">Study Session
+                            Time</span>
+                        <div class="pomodoro-display" id="studyTimer"
+                            style="color: var(--success); font-size: 26px; margin-bottom: 0;">00:00:00</div>
+                    </div>
+
+                    <!-- Pomodoro Settings -->
+                    <div class="pomo-header" style="margin-bottom: 12px; justify-content: center;">
+                        <span class="pomo-title" style="color: #ff6347;">Focus Settings</span>
+                    </div>
+
+                    <div
+                        style="font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 16px; text-align: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                        <strong>The Pomodoro Technique</strong><br>
+                        Focus deeply without distractions for 25 minutes, then take a 5-minute break to improve
+                        retention.
+                    </div>
+
+                    <div class="flight-path-container" id="flightPathContainer" style="display:block;">
+                        <div class="flight-path-label" id="flightPathLabel">Ready for Takeoff</div>
+                        <div class="flight-path-track">
+                            <div class="flight-path-fill" id="flightPathFill">
+                                <div class="flight-airplane" id="flightAirplane">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pomodoro-controls">
+                        <button class="pomo-ctrl-btn" id="pomoStart" style="flex:1;">&#9654;</button>
+                        <button class="pomo-ctrl-btn" id="pomoReset" style="flex:1;">&#8634;</button>
+                    </div>
+
+                    <div class="pomodoro-presets">
+                        <button class="pomo-preset" data-minutes="25" style="flex:1;">25m</button>
+                        <button class="pomo-preset" data-minutes="15" style="flex:1;">15m</button>
+                        <button class="pomo-preset" data-minutes="5" style="flex:1;">5m</button>
+                    </div>
+                </div>
+            </div>
+
+            <button class="notes-btn" id="notesBtn" title="Take Notes (N)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+                <span>Notes</span>
+            </button>
+            <div class="keyboard-hint">Press <kbd>ESC</kbd> to exit</div>
+        </div>
+    </div>
+
+    <!-- Notes Panel -->
+    <div class="notes-panel" id="notesPanel">
+        <div class="notes-header">
+            <h3>Module Notes</h3>
+            <div class="notes-actions">
+                <button class="notes-action-btn" id="copyNotesBtn" title="Copy to Clipboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width:14px;height:14px;">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </button>
+                <button class="notes-action-btn" id="downloadNotesBtn" title="Download as .txt">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width:14px;height:14px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </button>
+                <button class="close-notes" id="closeNotes">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width:18px;height:18px;">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="notes-subheader">
+            Use this space to log key CFRs, AD numbers, or specific torque values. Your notes are automatically saved
+            locally to your device.
+        </div>
+        <div class="notes-toolbar">
+            <button class="toolbar-btn" data-tag="h1" title="Header 1">H1</button>
+            <button class="toolbar-btn" data-tag="h2" title="Header 2">H2</button>
+            <button class="toolbar-btn" data-tag="bold" title="Bold">B</button>
+            <button class="toolbar-btn" data-tag="italic" title="Italic">I</button>
+            <button class="toolbar-btn" data-tag="ul" title="Bulleted List">&#8226; List</button>
+            <button class="toolbar-btn" data-tag="ol" title="Numbered List">1. List</button>
+            <button class="toolbar-btn" id="openFormulasBtn" style="margin-left:auto; color:var(--gold);"
+                title="Formulas">&#8721; Formulas</button>
+        </div>
+        <div class="notes-body">
+            <textarea class="notes-textarea" id="notesArea"
+                placeholder="Example: ATA 34 Nav Systems - The VOR operates in the VHF band (108.00 - 117.95 MHz)..."></textarea>
+        </div>
+    </div>
+
+    <!-- Formula Drawer -->
+    <div class="formula-drawer" id="formulaDrawer">
+        <div class="formula-header">
+            <span>Aviation Formulas</span>
+            <button class="formula-close" id="closeFormulasBtn">&#10005;</button>
+        </div>
+        <div class="formula-item" data-formula="E = I &#215; R">Ohm's Law: E = I &#215; R</div>
+        <div class="formula-item" data-formula="P = I &#215; E">Power: P = I &#215; E</div>
+        <div class="formula-item" data-formula="Rt = R1 + R2 + R3">Series Resistance: Rt = R1 + R2 + ...</div>
+        <div class="formula-item" data-formula="1/Rt = 1/R1 + 1/R2 + 1/R3">Parallel Res.: 1/Rt = 1/R1 + ...</div>
+        <div class="formula-item" data-formula="F = P &#215; A">Force: F = P &#215; A (Hydraulics)</div>
+        <div class="formula-item" data-formula="W = F &#215; D">Work: W = F &#215; D</div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="ace-loading-container">
+            <img id="aceLoadingSprite" class="ace-loading-sprite" src="ace-sprites/ace-192-idle.png" alt="Ace">
+            <img id="aceLoadingSteam" class="ace-loading-steam" src="ace-sprites/ace-192-idle-steam1.png" alt="">
+            <div class="ace-speech-bubble" id="aceSpeechBubble">Coffee's getting cold.</div>
+        </div>
+        <div class="loading-text">Loading Articulate Course...</div>
+        <div class="loading-joke" id="loadingJoke">Preparing your learning experience...</div>
+    </div>
+
+    <div class="rise-container" id="riseContainer">
+        <iframe id="riseFrame" class="rise-frame" src="" allow="fullscreen"></iframe>
+    </div>
+
+    <script>
+        // Get metadata from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const modulePath = urlParams.get('path'); // e.g. rise-modules/cns-systems/radio-communication-systems
+        const moduleTitle = urlParams.get('title') || 'Course Module';
+
+        document.getElementById('moduleTitle').textContent = moduleTitle;
+        document.title = `${moduleTitle} | CAET Prep`;
+
+        const RISE_SESSION_KEY = `caet_rise_session_${modulePath}`;
+        const NOTES_KEY = `caet_notes_${modulePath}`;
+        const COMPLETION_THRESHOLD = 300; // 5 minutes
+
+        let studyStartTime = Date.now();
+        let studyTimerInterval = null;
+        let totalStudySeconds = 0;
+
+        let pomodoroInterval = null;
+        let pomodoroSeconds = 25 * 60;
+        let pomodoroRunning = false;
+        let pomodoroInitialSeconds = 25 * 60;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!modulePath) {
+                alert("No course path provided in URL.");
+                return;
+            }
+
+            // Load iframe
+            const iframe = document.getElementById('riseFrame');
+
+            // Attach onload BEFORE setting src to prevent race conditions on fast/cached local assets
+            iframe.onload = function () {
+                setTimeout(() => {
+                    document.getElementById('loadingOverlay').classList.add('hidden');
+                }, 500);
+
+                // We cannot attach listeners directly into the iframe via file:// protocol due to CORS opaque origins.
+                // Instead, the child iframes will postMessage to the parent.
+            };
+
+            // Points back to root, then evaluates path, then /content/index.html
+            iframe.src = `../${modulePath}/content/index.html`;
+
+            // Listen for cross-origin messages from the Rise module iframe
+            window.addEventListener('message', function (event) {
+                if (event.data && event.data.type === 'RISE_KEYDOWN') {
+                    const key = event.data.key;
+                    if (key === 'Escape') goBack();
+                    if ((key === 'p' || key === 'P')) {
+                        togglePomodoroPanel();
+                    }
+                    if ((key === 'n' || key === 'N')) {
+                        document.getElementById('notesPanel').classList.toggle('open');
+                    }
+                }
+            });
+
+            // Init Systems
+            startStudyTimer();
+            loadSessionData();
+            initPomodoro();
+            initNotes();
+
+            // Keyboard Shortcuts
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') goBack();
+                if ((e.key === 'p' || e.key === 'P') && !e.ctrlKey && !e.metaKey && document.activeElement !== document.getElementById('notesArea')) {
+                    e.preventDefault();
+                    togglePomodoroPanel();
+                }
+                if ((e.key === 'n' || e.key === 'N') && !e.ctrlKey && !e.metaKey && document.activeElement !== document.getElementById('notesArea')) {
+                    e.preventDefault();
+                    document.getElementById('notesPanel').classList.toggle('open');
+                }
+            });
+
+            // Setup funny Ace phrases
+            const loadingJokes = [
+                "Cross-referencing CFR Part 43 amendments...",
+                "Filing the 8610-2 in triplicate...",
+                "Searching for that one missing logbook entry...",
+                "Deciphering handwriting from 1987...",
+                "Waiting on the FSDO callback...",
+                "Laminating another AD compliance sheet...",
+                "Alphabetizing the MEL binder tabs...",
+                "Re-reading the preamble to Part 145..."
+            ];
+
+            const aceQuips = [
+                "Coffee's getting cold.", "I've seen faster turboprops.",
+                "Paperwork moves quicker.", "Still faster than a parts order.",
+                "Let's get this bird in the air."
+            ];
+
+            document.getElementById('loadingJoke').textContent = loadingJokes[Math.floor(Math.random() * loadingJokes.length)];
+            document.getElementById('aceSpeechBubble').textContent = aceQuips[Math.floor(Math.random() * aceQuips.length)];
+
+            window.addEventListener('beforeunload', saveSessionData);
+            window.addEventListener('pagehide', saveSessionData);
+        });
+
+        // --- STUDY TIMER ---
+        function startStudyTimer() {
+            studyTimerInterval = setInterval(updateStudyTimer, 1000);
+            setInterval(saveSessionData, 10000); // Auto-save every 10 seconds
+        }
+        function updateStudyTimer() {
+            const elapsed = Math.floor((Date.now() - studyStartTime) / 1000) + totalStudySeconds;
+            const h = Math.floor(elapsed / 3600);
+            const m = Math.floor((elapsed % 3600) / 60);
+            const s = elapsed % 60;
+            document.getElementById('studyTimer').textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function loadSessionData() {
+            try { const saved = JSON.parse(localStorage.getItem(RISE_SESSION_KEY)); if (saved) totalStudySeconds = saved.totalSeconds || 0; } catch (e) { }
+        }
+        function saveSessionData() {
+            const elapsed = Math.floor((Date.now() - studyStartTime) / 1000);
+            const total = totalStudySeconds + elapsed;
+            localStorage.setItem(RISE_SESSION_KEY, JSON.stringify({ totalSeconds: total, lastUpdated: Date.now() }));
+        }
+
+        // --- POMODORO TIMER ---
+        const POMO_SESSION_KEY = `caet_pomo_session_${modulePath}`;
+
+        function initPomodoro() {
+            // Load from Local Storage
+            try {
+                const saved = JSON.parse(localStorage.getItem(POMO_SESSION_KEY));
+                if (saved && saved.pomodoroSeconds !== undefined) {
+                    pomodoroSeconds = saved.pomodoroSeconds;
+                    pomodoroInitialSeconds = saved.pomodoroInitialSeconds || 25 * 60;
+                    if (pomodoroSeconds < pomodoroInitialSeconds && pomodoroSeconds > 0) {
+                        document.getElementById('pomodoroPanel').classList.add('visible');
+                        document.getElementById('pomodoroPanel').classList.add('visible');
+                    }
+                }
+            } catch (e) { }
+
+            // Pomodoro Panel Toggle
+            const pomoToggleBtn = document.getElementById('pomodoroToggleMain');
+            if (pomoToggleBtn) pomoToggleBtn.addEventListener('click', function (e) { e.stopPropagation(); togglePomodoroPanel(); });
+
+            // Study Panel Toggle
+            const studyToggleBtn = document.getElementById('studyBtnToggle');
+            const studyPanel = document.getElementById('studyPanel');
+            if (studyToggleBtn) studyToggleBtn.addEventListener('click', function (e) { e.stopPropagation(); studyPanel.classList.toggle('visible'); });
+
+            document.getElementById('pomoStart').addEventListener('click', togglePomodoro);
+            document.getElementById('pomoReset').addEventListener('click', resetPomodoro);
+            document.querySelectorAll('.pomo-preset').forEach(b => b.addEventListener('click', () => setPomodoro(parseInt(b.dataset.minutes))));
+
+            // Global click outside to close panels
+            // Global click outside to close panels
+            document.addEventListener('click', function (e) {
+                const pomoP = document.getElementById('pomodoroPanel');
+                if (pomoP && pomoP.classList.contains('visible') && !pomoP.contains(e.target) && (!pomoToggleBtn || !pomoToggleBtn.contains(e.target))) {
+                    pomoP.classList.remove('visible');
+                }
+            });
+            updatePomodoroDisplay();
+        }
+
+        function savePomodoroState() {
+            localStorage.setItem(POMO_SESSION_KEY, JSON.stringify({
+                pomodoroSeconds: pomodoroSeconds,
+                pomodoroInitialSeconds: pomodoroInitialSeconds
+            }));
+        }
+
+        function togglePomodoroPanel() { const p = document.getElementById('pomodoroPanel'); p.classList.toggle('visible'); }
+        function formatPomodoroTime(t) { return `${Math.floor(t / 60).toString().padStart(2, '0')}:${(t % 60).toString().padStart(2, '0')}`; }
+
+        function updatePomodoroDisplay() {
+            const d = document.getElementById('pomodoroDisplay');
+            if (d) {
+                d.textContent = formatPomodoroTime(pomodoroSeconds);
+                d.classList.toggle('running', pomodoroRunning);
+            }
+
+            // Gamification: Update Flight Path progress
+            const fill = document.getElementById('flightPathFill');
+            const label = document.getElementById('flightPathLabel');
+            if (fill && label) {
+                if (!pomodoroRunning && pomodoroSeconds === pomodoroInitialSeconds) {
+                    fill.style.width = '0%';
+                    label.textContent = 'Ready for Takeoff';
+                    label.style.color = 'var(--text-muted)';
+                } else {
+                    const pct = Math.max(0, Math.min(100, ((pomodoroInitialSeconds - pomodoroSeconds) / pomodoroInitialSeconds) * 100));
+                    fill.style.width = pct + '%';
+
+                    if (pct === 100) { label.textContent = 'Touchdown! Focus complete.'; label.style.color = 'var(--gold)'; }
+                    else if (pct > 90) { label.textContent = 'Final Approach...'; label.style.color = 'var(--warning)'; }
+                    else if (pct > 10) { label.textContent = 'Cruising Altitude (Focus Mode)'; label.style.color = 'var(--success)'; }
+                    else { label.textContent = 'Climbing...'; label.style.color = 'var(--module-color)'; }
+                }
+            }
+        }
+
+        function togglePomodoro() {
+            const btn = document.getElementById('pomoStart');
+            if (pomodoroRunning) {
+                // Forest app style abort warning
+                if (confirm("Abort the flight? Your focus progress will be lost.")) {
+                    resetPomodoro();
+                }
+            }
+            else {
+                pomodoroRunning = true; btn.innerHTML = '&#10074;&#10074;'; /* Pause bars */ btn.classList.add('playing');
+                pomodoroInterval = setInterval(() => {
+                    if (pomodoroSeconds > 0) {
+                        pomodoroSeconds--;
+                        updatePomodoroDisplay();
+                        savePomodoroState();
+                    } else {
+                        clearInterval(pomodoroInterval);
+                        pomodoroRunning = false;
+                        btn.innerHTML = '&#9654;'; /* Play icon */
+                        btn.classList.remove('playing');
+                        updatePomodoroDisplay();
+                        playPomodoroComplete();
+                        savePomodoroState();
+                    }
+                }, 1000);
+            }
+            updatePomodoroDisplay();
+        }
+        function resetPomodoro() { clearInterval(pomodoroInterval); pomodoroRunning = false; pomodoroSeconds = pomodoroInitialSeconds; const b = document.getElementById('pomoStart'); if (b) { b.innerHTML = '&#9654;'; b.classList.remove('playing'); } updatePomodoroDisplay(); savePomodoroState(); }
+        function setPomodoro(min) { clearInterval(pomodoroInterval); pomodoroRunning = false; pomodoroSeconds = min * 60; pomodoroInitialSeconds = min * 60; const b = document.getElementById('pomoStart'); if (b) { b.innerHTML = '&#9654;'; b.classList.remove('playing'); } updatePomodoroDisplay(); savePomodoroState(); }
+
+        function playPomodoroComplete() {
+            // Premium silent UI visual notification
+            const fill = document.getElementById('flightPathFill');
+            const airplane = document.getElementById('flightAirplane');
+
+            if (fill && airplane) {
+                fill.style.boxShadow = '0 0 20px 5px var(--success)';
+                airplane.style.filter = 'drop-shadow(0 0 10px rgba(0,255,65,1))';
+                airplane.style.transform = 'scale(1.2) rotate(45deg)';
+
+                setTimeout(() => {
+                    fill.style.boxShadow = '0 0 10px var(--success)';
+                    airplane.style.filter = 'drop-shadow(0 0 5px rgba(0,255,65,0.6))';
+                    airplane.style.transform = 'scale(1) rotate(45deg)';
+                }, 3000);
+
+                // Award XP!
+                if (window.awardXP) window.awardXP(50, 'Completed Focus Flight');
+            }
+        }
+
+        // --- POMODORO TIMER GAMIFICATION ---
+
+        // --- NOTES SYSTEM ---
+        function initNotes() {
+            const notesBtn = document.getElementById('notesBtn');
+            const notesPanel = document.getElementById('notesPanel');
+            const closeNotes = document.getElementById('closeNotes');
+            const notesArea = document.getElementById('notesArea');
+
+            if (notesBtn) notesBtn.addEventListener('click', () => notesPanel.classList.add('open'));
+            if (closeNotes) closeNotes.addEventListener('click', () => notesPanel.classList.remove('open'));
+
+            if (notesArea) {
+                notesArea.value = localStorage.getItem(NOTES_KEY) || '';
+                notesArea.addEventListener('input', () => {
+                    localStorage.setItem(NOTES_KEY, notesArea.value);
+                });
+            }
+
+            const copyBtn = document.getElementById('copyNotesBtn');
+            const downloadBtn = document.getElementById('downloadNotesBtn');
+
+            if (copyBtn && notesArea) {
+                copyBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(notesArea.value).then(() => {
+                        const originalSvg = copyBtn.innerHTML;
+                        copyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#00ff41" stroke-width="2" style="width:14px;height:14px;"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                        setTimeout(() => copyBtn.innerHTML = originalSvg, 2000);
+                    });
+                });
+            }
+
+
+            // Toolbar Logic
+            const formatText = (prefix, suffix, defaultText) => {
+                const start = notesArea.selectionStart;
+                const end = notesArea.selectionEnd;
+                const selectedText = notesArea.value.substring(start, end);
+                const replacement = prefix + (selectedText || defaultText) + suffix;
+                notesArea.value = notesArea.value.substring(0, start) + replacement + notesArea.value.substring(end);
+                notesArea.focus();
+                notesArea.setSelectionRange(start + prefix.length, start + prefix.length + (selectedText || defaultText).length);
+                localStorage.setItem(NOTES_KEY, notesArea.value);
+            };
+
+            document.querySelectorAll('.toolbar-btn[data-tag]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const tag = e.target.getAttribute('data-tag');
+                    if (tag === 'h1') formatText('# ', '', 'Header 1');
+                    if (tag === 'h2') formatText('## ', '', 'Header 2');
+                    if (tag === 'bold') formatText('**', '**', 'bold text');
+                    if (tag === 'italic') formatText('_', '_', 'italic text');
+                    if (tag === 'ul') formatText('\n- ', '', 'list item');
+                    if (tag === 'ol') formatText('\n1. ', '', 'list item');
+                });
+            });
+
+            // Formula Drawer Logic
+            const formBtn = document.getElementById('openFormulasBtn');
+            const drawer = document.getElementById('formulaDrawer');
+            if (formBtn && drawer) {
+                formBtn.addEventListener('click', () => drawer.classList.toggle('open'));
+                document.getElementById('closeFormulasBtn').addEventListener('click', () => drawer.classList.remove('open'));
+
+                document.querySelectorAll('.formula-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        const formula = e.target.getAttribute('data-formula');
+                        formatText('\n**' + formula + '**\n', '', '');
+                        drawer.classList.remove('open');
+                    });
+                });
+            }
+
+            // XP System Helpers
+            window.awardXP = function (amount, reason) {
+                let currentXp = parseInt(localStorage.getItem('caet_total_xp')) || 0;
+                currentXp += amount;
+                localStorage.setItem('caet_total_xp', currentXp);
+                console.log(`Awarded ${amount} XP for: ${reason}. Total: ${currentXp}`);
+
+                // Show floating XP text if pomodoro widget is active
+                const widget = document.getElementById('pomodoroWidget');
+                if (widget) {
+                    const floater = document.createElement('div');
+                    floater.className = 'xp-float';
+                    floater.textContent = `+${amount} XP`;
+                    widget.appendChild(floater);
+                    setTimeout(() => floater.remove(), 2500);
+                }
+            };
+
+            if (downloadBtn && notesArea) {
+                downloadBtn.addEventListener('click', () => {
+                    const blob = new Blob([notesArea.value], { type: 'text/markdown' });
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    const cleanTitle = moduleTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                    a.download = `caet_notes_${cleanTitle}.md`;
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                });
+            }
+        }
+
+        function goBack() {
+            saveSessionData();
+            if (studyTimerInterval) clearInterval(studyTimerInterval);
+            if (pomodoroInterval) clearInterval(pomodoroInterval);
+            // Navigate to the referring page, or default to journey
+            var backTo = new URLSearchParams(location.search).get('back') || '../journey.html';
+            window.location.href = backTo;
+        }
+    </script>
+</body>
+
+</html>

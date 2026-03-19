@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAET Advanced Tracker — Demo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#003366;--blue-d:#001a33;--gold:#C5960C;--gold-l:#f5e6b8;--bg:#f4f7fa;--card:#fff;--text:#1a1a2e;--green:#28a745;--red:#dc3545;--border:#e2e5ea;--shadow:0 2px 12px rgba(0,0,0,0.08);--radius:12px;--orange:#fd7e14}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+a{color:var(--blue);text-decoration:none}
+
+/* Header */
+.header{background:var(--blue);color:#fff;padding:0.8rem 0;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.header-brand{display:flex;align-items:center;gap:0.75rem}
+.header-logo{width:42px;height:42px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:var(--blue)}
+.header-title{font-size:1.1rem;font-weight:700}
+.header-subtitle{font-size:0.7rem;opacity:0.8}
+.back-link{color:#fff;opacity:0.8;font-size:0.9rem}
+.back-link:hover{opacity:1}
+
+/* Tabs */
+.tab-bar{background:var(--card);border-bottom:2px solid var(--border);display:flex;max-width:1200px;margin:0 auto;overflow-x:auto}
+.tab-btn{padding:1rem 1.5rem;font-size:0.95rem;font-weight:600;color:#666;background:none;border:none;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;white-space:nowrap}
+.tab-btn:hover{color:var(--blue);background:var(--bg)}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--gold)}
+
+/* Content */
+.content{max-width:1200px;margin:0 auto;padding:1.5rem}
+.role-section{margin-bottom:3rem;padding-bottom:2rem;border-bottom:2px solid var(--border)}
+.role-section:last-child{border-bottom:none}
+.role-header{font-size:1.6rem;font-weight:800;color:var(--blue);margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem}
+.role-sub{color:#666;margin-bottom:1.5rem}
+
+/* Cards */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;margin-bottom:1rem}
+.card h3{color:var(--blue);margin-bottom:0.75rem;font-size:1.1rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:1rem}
+
+/* Stat strip mini */
+.mini-stats{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem}
+.mini-stat{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1rem 1.5rem;flex:1;min-width:140px;text-align:center}
+.mini-stat .num{font-size:1.8rem;font-weight:800;color:var(--blue)}
+.mini-stat .label{font-size:0.75rem;color:#888;text-transform:uppercase;letter-spacing:1px}
+
+/* Progress ring */
+.progress-ring-wrap{text-align:center;margin-bottom:1.5rem}
+.progress-ring{position:relative;display:inline-block;width:160px;height:160px}
+.progress-ring svg{transform:rotate(-90deg)}
+.progress-ring circle{fill:none;stroke-width:12}
+.progress-ring .bg{stroke:var(--border)}
+.progress-ring .fg{stroke:var(--gold);stroke-linecap:round;stroke-dasharray:440;stroke-dashoffset:73}
+.progress-ring .pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:2.2rem;font-weight:800;color:var(--blue)}
+.progress-ring .pct small{display:block;font-size:0.7rem;font-weight:400;color:#888}
+
+/* Pipeline steps */
+.pipeline-steps{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.p-step{flex:1;min-width:100px;text-align:center;padding:0.75rem;border-radius:8px;font-size:0.85rem;font-weight:600}
+.p-step.done{background:#d4edda;color:var(--green)}
+.p-step.current{background:var(--gold-l);color:var(--gold);border:2px solid var(--gold)}
+.p-step.pending{background:#f0f0f0;color:#999}
+
+/* Progress bars */
+.progress-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin:0.5rem 0}
+.progress-bar .fill{height:100%;border-radius:4px;background:var(--green);transition:width 0.3s}
+
+/* Section cards */
+.section-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border-left:4px solid var(--gold);margin-bottom:0.75rem;overflow:hidden}
+.section-card-header{padding:1rem 1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.section-card-header h4{color:var(--blue);font-size:0.95rem}
+.section-card-header .sec-meta{display:flex;align-items:center;gap:0.75rem;font-size:0.85rem;color:#888}
+.section-card-header .chevron{transition:transform 0.2s;font-size:0.8rem}
+.section-card.open .chevron{transform:rotate(180deg)}
+.section-card-body{display:none;border-top:1px solid var(--border)}
+.section-card.open .section-card-body{display:block}
+
+/* Without JS: show all task tables */
+.section-card-body{display:block}
+
+/* Task table */
+.task-table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.task-table th{text-align:left;padding:0.5rem 1rem;background:var(--bg);color:#666;font-weight:600;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px}
+.task-table td{padding:0.5rem 1rem;border-bottom:1px solid var(--border)}
+.badge{display:inline-block;padding:0.15rem 0.6rem;border-radius:20px;font-size:0.75rem;font-weight:600}
+.badge-signed{background:#d4edda;color:var(--green)}
+.badge-submitted{background:#cce5ff;color:#004085}
+.badge-progress{background:#fff3cd;color:#856404}
+.badge-notstarted{background:#f0f0f0;color:#999}
+
+/* Portfolio */
+.portfolio-list{list-style:none}
+.portfolio-list li{padding:0.6rem 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.75rem;font-size:0.9rem}
+.check{color:var(--green);font-weight:700}
+.uncheck{color:#ccc}
+
+/* Evaluator */
+.roster-table{width:100%;border-collapse:collapse;font-size:0.9rem}
+.roster-table th{text-align:left;padding:0.6rem 1rem;background:var(--bg);color:#666;font-size:0.8rem;text-transform:uppercase}
+.roster-table td{padding:0.6rem 1rem;border-bottom:1px solid var(--border)}
+.btn{display:inline-block;padding:0.4rem 1rem;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;border:none;transition:background 0.2s}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:var(--blue-d)}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-green{background:var(--green);color:#fff}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:var(--radius);padding:2rem;max-width:500px;width:90%;box-shadow:0 12px 40px rgba(0,0,0,0.2)}
+.modal h3{color:var(--blue);margin-bottom:1rem}
+.modal label{display:block;font-size:0.85rem;color:#666;margin-bottom:0.25rem;margin-top:0.75rem}
+.modal input,.modal textarea,.modal select{width:100%;padding:0.5rem;border:1px solid var(--border);border-radius:6px;font-size:0.9rem}
+.modal textarea{height:80px;resize:vertical}
+.modal-actions{margin-top:1.5rem;display:flex;gap:0.75rem;justify-content:flex-end}
+
+/* Committee rubric */
+.rubric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem}
+.rubric-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;text-align:center}
+.rubric-card h4{color:var(--blue);margin-bottom:0.5rem}
+.rubric-score{font-size:2.5rem;font-weight:800;color:var(--gold)}
+.rubric-max{font-size:0.9rem;color:#888}
+.score-dots{display:flex;justify-content:center;gap:0.4rem;margin-top:0.5rem}
+.dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;cursor:pointer}
+.dot.filled{background:var(--gold);border-color:var(--gold);color:#fff}
+
+/* Admin funnel */
+.funnel{margin:1.5rem 0}
+.funnel-row{display:flex;align-items:center;gap:1rem;margin-bottom:0.5rem}
+.funnel-bar{height:36px;border-radius:6px;display:flex;align-items:center;padding:0 1rem;color:#fff;font-weight:700;font-size:0.85rem}
+.funnel-label{min-width:120px;font-size:0.9rem;font-weight:600;text-align:right}
+
+/* Evaluator quality */
+.quality-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.q-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.2rem}
+.q-card h4{font-size:0.95rem;color:var(--blue)}
+.q-card .q-stat{font-size:1.6rem;font-weight:800;color:var(--gold)}
+
+@media(max-width:768px){
+  .tab-btn{padding:0.75rem 1rem;font-size:0.85rem}
+  .card-grid{grid-template-columns:1fr}
+  .pipeline-steps{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="header-logo">AEA</div>
+      <div><div class="header-title">CAET Advanced Tracker</div><div class="header-subtitle">Interactive Demo</div></div>
+    </div>
+    <a href="index.html" class="back-link">← Back to Overview</a>
+  </div>
+</header>
+
+<div class="tab-bar" id="tabBar">
+  <button class="tab-btn active" data-tab="technician" onclick="switchTab('technician')">🛠️ Technician</button>
+  <button class="tab-btn" data-tab="evaluator" onclick="switchTab('evaluator')">✅ Evaluator</button>
+  <button class="tab-btn" data-tab="committee" onclick="switchTab('committee')">⚖️ Committee</button>
+  <button class="tab-btn" data-tab="admin" onclick="switchTab('admin')">📊 Admin</button>
+</div>
+
+<div class="content">
+
+<!-- ============ TECHNICIAN ============ -->
+<div class="role-section" id="technician">
+<div class="role-header">🛠️ Technician Dashboard</div>
+<div class="role-sub">Sarah Chen — Thompson Avionics · 67 of 75 tasks complete</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-start;margin-bottom:1.5rem">
+<div class="progress-ring-wrap">
+  <div class="progress-ring">
+    <svg width="160" height="160"><circle class="bg" cx="80" cy="80" r="70"/><circle class="fg" cx="80" cy="80" r="70"/></svg>
+    <div class="pct">89%<small>67 / 75</small></div>
+  </div>
+</div>
+<div style="flex:1;min-width:280px">
+  <div class="mini-stats">
+    <div class="mini-stat"><div class="num" style="color:var(--green)">60</div><div class="label">Signed Off</div></div>
+    <div class="mini-stat"><div class="num" style="color:#004085">5</div><div class="label">Submitted</div></div>
+    <div class="mini-stat"><div class="num" style="color:var(--orange)">2</div><div class="label">In Progress</div></div>
+    <div class="mini-stat"><div class="num" style="color:#999">8</div><div class="label">Not Started</div></div>
+  </div>
+</div>
+</div>
+
+<h3 style="color:var(--blue);margin-bottom:0.75rem">Pipeline Status</h3>
+<div class="pipeline-steps">
+  <div class="p-step done">✓ Written Exam</div>
+  <div class="p-step current">⬤ PQS Tasks (89%)</div>
+  <div class="p-step pending">Portfolio</div>
+  <div class="p-step pending">Oral Board</div>
+  <div class="p-step pending">Certified</div>
+</div>
+
+<h3 style="color:var(--blue);margin:1.5rem 0 0.75rem">PQS Sections</h3>
+
+<!-- Section 1 -->
+<div class="section-card open">
+<div class="section-card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h4>Section 1: Regulatory Compliance</h4>
+  <div class="sec-meta"><span>4/4</span><div class="progress-bar" style="width:80px"><div class="fill" style="width:100%"></div></div><span class="chevron">▼</span></div>
+</div>
+<div class="section-card-body">
+<table class="task-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead><tbody>
+<tr><td>1.4.1</td><td>Given an avionics installation scenario, determine what approved data is required</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-02</td></tr>
+<tr><td>1.4.2</td><td>Look up whether any ADs apply to a specified avionics unit</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-03</td></tr>
+<tr><td>1.4.3</td><td>Explain the difference between a major and minor alteration</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-05</td></tr>
+<tr><td>1.4.4</td><td>Identify approvals/documentation for GPS navigator installation</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-06</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- Section 2 -->
+<div class="section-card open">
+<div class="section-card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h4>Section 2: Maintenance Documentation</h4>
+  <div class="sec-meta"><span>5/5</span><div class="progress-bar" style="width:80px"><div class="fill" style="width:100%"></div></div><span class="chevron">▼</span></div>
+</div>
+<div class="section-card-body">
+<table class="task-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead><tbody>
+<tr><td>2.4.1</td><td>Write logbook entry for transponder inspection per 91.413</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-10</td></tr>
+<tr><td>2.4.2</td><td>Write logbook entry for pitot-static test per 91.411</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-11</td></tr>
+<tr><td>2.4.3</td><td>Write maintenance record entry for completed avionics installation</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-12</td></tr>
+<tr><td>2.4.4</td><td>Complete FAA Form 337 for major alteration</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-14</td></tr>
+<tr><td>2.4.5</td><td>Explain who can sign return-to-service and legal meaning</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-15</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- Section 3 -->
+<div class="section-card open">
+<div class="section-card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h4>Section 3: Wiring Diagrams</h4>
+  <div class="sec-meta"><span>4/4</span><div class="progress-bar" style="width:80px"><div class="fill" style="width:100%"></div></div><span class="chevron">▼</span></div>
+</div>
+<div class="section-card-body">
+<table class="task-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead><tbody>
+<tr><td>3.4.1</td><td>Identify wire types, gauges, connector pins, grounds, CBs from wiring diagram</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-18</td></tr>
+<tr><td>3.4.2</td><td>Identify two intentional discrepancies between drawing and installation</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-19</td></tr>
+<tr><td>3.4.3</td><td>Locate current revision of installation manual for specified unit</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-20</td></tr>
+<tr><td>3.4.4</td><td>Determine Service Bulletin applicability, parts and labor</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-21</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- Section 4 -->
+<div class="section-card open">
+<div class="section-card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h4>Section 4: Wire Harness Fabrication</h4>
+  <div class="sec-meta"><span>6/6</span><div class="progress-bar" style="width:80px"><div class="fill" style="width:100%"></div></div><span class="chevron">▼</span></div>
+</div>
+<div class="section-card-body">
+<table class="task-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead><tbody>
+<tr><td>4.4.1</td><td>Fabricate wire harness with shielded, standard, and coaxial cable</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-24</td></tr>
+<tr><td>4.4.2</td><td>Demonstrate proper crimp technique with pull test</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-24</td></tr>
+<tr><td>4.4.3</td><td>Bundle and secure harness with cable ties</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-25</td></tr>
+<tr><td>4.4.4</td><td>Check continuity with multimeter pin-to-pin</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-25</td></tr>
+<tr><td>4.4.5</td><td>Perform insulation resistance test with megohmmeter</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-26</td></tr>
+<tr><td>4.4.6</td><td>Locate fault in harness using multimeter</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-11-26</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- Section 5 -->
+<div class="section-card open">
+<div class="section-card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h4>Section 5: Audio Panel</h4>
+  <div class="sec-meta"><span>5/5</span><div class="progress-bar" style="width:80px"><div class="fill" style="width:100%"></div></div><span class="chevron">▼</span></div>
+</div>
+<div class="section-card-body">
+<table class="task-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead><tbody>
+<tr><td>5.4.1</td><td>Configure audio panel for COM1 TX, COM1+COM2 RX, crew-isolated intercom</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-01</td></tr>
+<tr><td>5.4.2</td><td>Identify audio panel jacks and explain signal flow</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-01</td></tr>
+<tr><td>5.4.3</td><td>Functional check: TX on COM1, RX on COM2, intercom pilot-copilot</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-02</td></tr>
+<tr><td>5.4.4</td><td>Identify marker beacon antenna; explain O/M/I markers</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-02</td></tr>
+<tr><td>5.4.5</td><td>Troubleshoot 'no transmit' squawk systematically</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-03</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- Section 6 -->
+<div class="section-card open">
+<div class="section-card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h4>Section 6: Navigation</h4>
+  <div class="sec-meta"><span>6/6</span><div class="progress-bar" style="width:80px"><div class="fill" style="width:100%"></div></div><span class="chevron">▼</span></div>
+</div>
+<div class="section-card-body">
+<table class="task-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead><tbody>
+<tr><td>6.4.1</td><td>Tune VOR, set OBS, interpret CDI</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-05</td></tr>
+<tr><td>6.4.2</td><td>Tune ILS frequency, explain localizer/glideslope/ident</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-05</td></tr>
+<tr><td>6.4.3</td><td>Check GPS database currency and expiration</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-06</td></tr>
+<tr><td>6.4.4</td><td>Identify VOR, GPS, and glideslope antenna locations</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-06</td></tr>
+<tr><td>6.4.5</td><td>Explain WAAS function, verification, and LPV capability</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-08</td></tr>
+<tr><td>6.4.6</td><td>Verify VOR receiver accuracy with ramp test equipment</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-08</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- Section 7 -->
+<div class="section-card open">
+<div class="section-card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h4>Section 7: Communication</h4>
+  <div class="sec-meta"><span>4/4</span><div class="progress-bar" style="width:80px"><div class="fill" style="width:100%"></div></div><span class="chevron">▼</span></div>
+</div>
+<div class="section-card-body">
+<table class="task-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead><tbody>
+<tr><td>7.4.1</td><td>COM radio functional check: TX, RX, squelch</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-10</td></tr>
+<tr><td>7.4.2</td><td>Identify COM antenna locations, explain bonding importance</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-10</td></tr>
+<tr><td>7.4.3</td><td>Measure VSWR of COM antenna system</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-11</td></tr>
+<tr><td>7.4.4</td><td>Troubleshoot weak transmit/poor range squawk</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-11</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- Section 8 -->
+<div class="section-card open">
+<div class="section-card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h4>Section 8: Transponder / ADS-B</h4>
+  <div class="sec-meta"><span>6/6</span><div class="progress-bar" style="width:80px"><div class="fill" style="width:100%"></div></div><span class="chevron">▼</span></div>
+</div>
+<div class="section-card-body">
+<table class="task-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead><tbody>
+<tr><td>8.4.1</td><td>Explain transponder modes A/C/S, demonstrate selection, state emergency codes</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-15</td></tr>
+<tr><td>8.4.2</td><td>Identify transponder antenna locations, explain diversity</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-15</td></tr>
+<tr><td>8.4.3</td><td>Verify altitude encoder matches altimeter within 125ft</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-16</td></tr>
+<tr><td>8.4.4</td><td>Perform transponder test per 91.413 with test equipment</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-16</td></tr>
+<tr><td>8.4.5</td><td>Verify ADS-B Out: GPS source, aircraft ID, squawk code</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-17</td></tr>
+<tr><td>8.4.6</td><td>Complete transponder test data form</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-17</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- Section 9 -->
+<div class="section-card open">
+<div class="section-card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h4>Section 9: Pitot-Static</h4>
+  <div class="sec-meta"><span>8/8</span><div class="progress-bar" style="width:80px"><div class="fill" style="width:100%"></div></div><span class="chevron">▼</span></div>
+</div>
+<div class="section-card-body">
+<table class="task-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead><tbody>
+<tr><td>9.4.1</td><td>Connect pitot-static test equipment with proper adapters</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-19</td></tr>
+<tr><td>9.4.2</td><td>Static system leak test at 1,000ft, measure leak rate</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-19</td></tr>
+<tr><td>9.4.3</td><td>Pitot system check: apply airspeed, verify ASI</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-20</td></tr>
+<tr><td>9.4.4</td><td>Check altimeter accuracy at three test altitudes</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-20</td></tr>
+<tr><td>9.4.5</td><td>Verify altitude encoder correlation at three altitudes</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-21</td></tr>
+<tr><td>9.4.6</td><td>Pitot heat functional check</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-21</td></tr>
+<tr><td>9.4.7</td><td>Describe systematic approach to isolate static leak</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-22</td></tr>
+<tr><td>9.4.8</td><td>Complete altimeter/static test documentation per 91.411</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2025-12-22</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- Section 10 - 60 signed so far (4+5+4+6+5+6+4+6+8=48... need to count) -->
+<!-- Running total: S1=4, S2=5, S3=4, S4=6, S5=5, S6=6, S7=4, S8=6, S9=8 = 48 signed. Need 12 more signed from S10-S13, then 5 submitted, 2 in-progress, 8 not started = 15 remaining tasks in S10-S13 which have 7+6+6+8=27 tasks. 60 signed total means 12 more signed. Then 5 submitted, 2 in-progress, 8 not started. -->
+
+<!-- Section 10: 7 tasks. First 5 signed, 2 submitted -->
+<div class="section-card open">
+<div class="section-card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h4>Section 10: Autopilot</h4>
+  <div class="sec-meta"><span>5/7</span><div class="progress-bar" style="width:80px"><div class="fill" style="width:71%"></div></div><span class="chevron">▼</span></div>
+</div>
+<div class="section-card-body">
+<table class="task-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead><tbody>
+<tr><td>10.4.1</td><td>Explain basic autopilot system: controller, servos, signal flow</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2026-01-06</td></tr>
+<tr><td>10.4.2</td><td>Demonstrate autopilot preflight check per POH</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2026-01-06</td></tr>
+<tr><td>10.4.3</td><td>Test autopilot disconnect methods, verify annunciations</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2026-01-07</td></tr>
+<tr><td>10.4.4</td><td>Verify electric trim operation: direction, indicator</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2026-01-07</td></tr>
+<tr><td>10.4.5</td><td>Autopilot functional check: heading mode, altitude hold</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2026-01-08</td></tr>
+<tr><td>10.4.6</td><td>Explain flight director vs autopilot operation</td><td><span class="badge badge-submitted">⏳ Submitted</span></td><td>2026-01-10</td></tr>
+<tr><td>10.4.7</td><td>Troubleshoot 'autopilot will not engage' squawk</td><td><span class="badge badge-submitted">⏳ Submitted</span></td><td>2026-01-10</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- Section 11: 6 tasks. First 4 signed, 1 submitted, 1 in-progress. Running: 57 signed + ... wait let me recount.
+S1-S9 = 48 signed. S10 = 5 signed. Total = 53 signed. Need 60 signed total. So S11 needs 6 signed, S12 needs 1 signed = 60. Then S12 has 5 remaining: 2 submitted, 2 in-progress, 1 not started. S13 all 8 not started. That's 60+2+2+(1+8) = 60 signed + 5 submitted? No...
+Let me redo: 60 signed, 5 submitted, 2 in-progress, 8 not started = 75.
+S1-S9 = 48 signed. Need 12 more signed from S10-S13.
+S10: 5 signed, 2 submitted = 7 tasks (total signed: 53, submitted: 2)
+S11: 6 signed = 6 tasks (total signed: 59)
+S12: 1 signed, 3 submitted, 2 in-progress = 6 tasks (total signed: 60, submitted: 5, in-progress: 2)
+S13: 8 not started (total not-started: 8) ✓
+60+5+2+8=75 ✓ -->
+
+<!-- Section 11: all 6 signed -->
+<div class="section-card open">
+<div class="section-card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h4>Section 11: Compass</h4>
+  <div class="sec-meta"><span>6/6</span><div class="progress-bar" style="width:80px"><div class="fill" style="width:100%"></div></div><span class="chevron">▼</span></div>
+</div>
+<div class="section-card-body">
+<table class="task-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead><tbody>
+<tr><td>11.4.1</td><td>Inspect magnetic compass: fluid, card freedom, lighting</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2026-01-13</td></tr>
+<tr><td>11.4.2</td><td>State when compass swing is required</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2026-01-13</td></tr>
+<tr><td>11.4.3</td><td>Describe compass swing procedure</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2026-01-14</td></tr>
+<tr><td>11.4.4</td><td>Create/verify compass deviation card</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2026-01-14</td></tr>
+<tr><td>11.4.5</td><td>Explain slaved compass system operation</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2026-01-15</td></tr>
+<tr><td>11.4.6</td><td>Assist in compass swing, record data at all headings</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2026-01-15</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- Section 12: 1 signed, 3 submitted, 2 in-progress -->
+<div class="section-card open">
+<div class="section-card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h4>Section 12: EFB / Connectivity</h4>
+  <div class="sec-meta"><span>1/6</span><div class="progress-bar" style="width:80px"><div class="fill" style="width:17%"></div></div><span class="chevron">▼</span></div>
+</div>
+<div class="section-card-body">
+<table class="task-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead><tbody>
+<tr><td>12.4.1</td><td>Verify EFB mounting security, no control obstruction</td><td><span class="badge badge-signed">✓ Signed</span></td><td>2026-01-20</td></tr>
+<tr><td>12.4.2</td><td>Verify EFB power connection, CB identification</td><td><span class="badge badge-submitted">⏳ Submitted</span></td><td>2026-02-01</td></tr>
+<tr><td>12.4.3</td><td>Verify EFB receives GPS, traffic, weather data</td><td><span class="badge badge-submitted">⏳ Submitted</span></td><td>2026-02-03</td></tr>
+<tr><td>12.4.4</td><td>Identify WiFi router/AP, verify power, explain separation</td><td><span class="badge badge-submitted">⏳ Submitted</span></td><td>2026-02-05</td></tr>
+<tr><td>12.4.5</td><td>Verify portable ADS-B In receiver operation</td><td><span class="badge badge-progress">🔄 In Progress</span></td><td>—</td></tr>
+<tr><td>12.4.6</td><td>Troubleshoot 'no data to EFB' squawk</td><td><span class="badge badge-progress">🔄 In Progress</span></td><td>—</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- Section 13: all 8 not started -->
+<div class="section-card open">
+<div class="section-card-header" onclick="this.parentElement.classList.toggle('open')">
+  <h4>Section 13: FMS</h4>
+  <div class="sec-meta"><span>0/8</span><div class="progress-bar" style="width:80px"><div class="fill" style="width:0%"></div></div><span class="chevron">▼</span></div>
+</div>
+<div class="section-card-body">
+<table class="task-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead><tbody>
+<tr><td>13.4.1</td><td>Check nav database currency on GTN/G1000/similar</td><td><span class="badge badge-notstarted">Not Started</span></td><td>—</td></tr>
+<tr><td>13.4.2</td><td>Perform navigation database update</td><td><span class="badge badge-notstarted">Not Started</span></td><td>—</td></tr>
+<tr><td>13.4.3</td><td>Enter basic flight plan: origin, destination, waypoint</td><td><span class="badge badge-notstarted">Not Started</span></td><td>—</td></tr>
+<tr><td>13.4.4</td><td>Select SID/ODP and STAR in flight plan</td><td><span class="badge badge-notstarted">Not Started</span></td><td>—</td></tr>
+<tr><td>13.4.5</td><td>Load approach procedure, activate vectors-to-final</td><td><span class="badge badge-notstarted">Not Started</span></td><td>—</td></tr>
+<tr><td>13.4.6</td><td>Explain route discontinuity and how to resolve</td><td><span class="badge badge-notstarted">Not Started</span></td><td>—</td></tr>
+<tr><td>13.4.7</td><td>Verify FMS output to autopilot in GPS/NAV mode</td><td><span class="badge badge-notstarted">Not Started</span></td><td>—</td></tr>
+<tr><td>13.4.8</td><td>Troubleshoot 'database error' message</td><td><span class="badge badge-notstarted">Not Started</span></td><td>—</td></tr>
+</tbody></table>
+</div></div>
+
+<h3 style="color:var(--blue);margin:1.5rem 0 0.75rem">Portfolio Checklist</h3>
+<div class="card">
+<ul class="portfolio-list">
+  <li><span class="check">✓</span> Completed FAA Form 337 (from Task 2.4.4)</li>
+  <li><span class="check">✓</span> Wire harness fabrication photos with sign-off</li>
+  <li><span class="check">✓</span> Transponder test data form (from Task 8.4.6)</li>
+  <li><span class="check">✓</span> Pitot-static test documentation (from Task 9.4.8)</li>
+  <li><span class="check">✓</span> Compass swing data record</li>
+  <li><span class="uncheck">○</span> Troubleshooting write-up (any Section 5-13 troubleshoot task)</li>
+  <li><span class="uncheck">○</span> Supervisor/evaluator endorsement letter</li>
+</ul>
+</div>
+</div>
+
+<!-- ============ EVALUATOR ============ -->
+<div class="role-section" id="evaluator">
+<div class="role-header">✅ Evaluator Dashboard</div>
+<div class="role-sub">Mike Rodriguez — Senior Evaluator, Thompson Avionics · 3 active candidates</div>
+
+<div class="mini-stats">
+  <div class="mini-stat"><div class="num">3</div><div class="label">Active Candidates</div></div>
+  <div class="mini-stat"><div class="num">142</div><div class="label">Tasks Signed</div></div>
+  <div class="mini-stat"><div class="num">98%</div><div class="label">Quality Score</div></div>
+</div>
+
+<h3 style="color:var(--blue);margin-bottom:0.75rem">Candidate Roster</h3>
+<div class="card" style="overflow-x:auto">
+<table class="roster-table">
+<thead><tr><th>Candidate</th><th>Progress</th><th>Current Section</th><th>Pending Sign-offs</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><strong>Sarah Chen</strong></td><td><div class="progress-bar" style="width:120px"><div class="fill" style="width:89%"></div></div> 67/75</td><td>12. EFB/Connectivity</td><td>5</td><td><button class="btn btn-blue" onclick="openSignoff('Sarah Chen','12.4.2')">Review Tasks</button></td></tr>
+<tr><td><strong>James Wilson</strong></td><td><div class="progress-bar" style="width:120px"><div class="fill" style="width:45%"></div></div> 34/75</td><td>6. Navigation</td><td>3</td><td><button class="btn btn-blue" onclick="openSignoff('James Wilson','6.4.3')">Review Tasks</button></td></tr>
+<tr><td><strong>Maria Santos</strong></td><td><div class="progress-bar" style="width:120px"><div class="fill" style="width:20%"></div></div> 15/75</td><td>3. Wiring Diagrams</td><td>2</td><td><button class="btn btn-blue" onclick="openSignoff('Maria Santos','3.4.2')">Review Tasks</button></td></tr>
+</tbody>
+</table>
+</div>
+
+<h3 style="color:var(--blue);margin:1.5rem 0 0.75rem">Pending Sign-offs — Sarah Chen</h3>
+<div class="card" style="overflow-x:auto">
+<table class="roster-table">
+<thead><tr><th>Task</th><th>Description</th><th>Submitted</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td>12.4.2</td><td>Verify EFB power connection, CB identification</td><td>2026-02-01</td><td><button class="btn btn-green" onclick="openSignoff('Sarah Chen','12.4.2')">Sign Off</button></td></tr>
+<tr><td>12.4.3</td><td>Verify EFB receives GPS, traffic, weather data</td><td>2026-02-03</td><td><button class="btn btn-green" onclick="openSignoff('Sarah Chen','12.4.3')">Sign Off</button></td></tr>
+<tr><td>12.4.4</td><td>Identify WiFi router/AP, verify power, explain separation</td><td>2026-02-05</td><td><button class="btn btn-green" onclick="openSignoff('Sarah Chen','12.4.4')">Sign Off</button></td></tr>
+<tr><td>10.4.6</td><td>Explain flight director vs autopilot operation</td><td>2026-01-10</td><td><button class="btn btn-green" onclick="openSignoff('Sarah Chen','10.4.6')">Sign Off</button></td></tr>
+<tr><td>10.4.7</td><td>Troubleshoot 'autopilot will not engage' squawk</td><td>2026-01-10</td><td><button class="btn btn-green" onclick="openSignoff('Sarah Chen','10.4.7')">Sign Off</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- Sign-off Modal -->
+<div class="modal-overlay" id="signoffModal">
+<div class="modal">
+  <h3>Task Sign-Off</h3>
+  <p id="signoffInfo" style="color:#666;margin-bottom:0.5rem">Sarah Chen — Task 12.4.2</p>
+  <label>Observation Notes</label>
+  <textarea placeholder="Describe how the candidate demonstrated this competency..."></textarea>
+  <label>Performance Rating</label>
+  <select>
+    <option>5 — Exceptional</option>
+    <option selected>4 — Proficient</option>
+    <option>3 — Satisfactory</option>
+    <option>2 — Needs Improvement</option>
+    <option>1 — Unsatisfactory</option>
+  </select>
+  <label>Evaluator Signature</label>
+  <input type="text" value="Mike Rodriguez" readonly style="background:var(--bg)">
+  <div class="modal-actions">
+    <button class="btn" style="background:var(--border)" onclick="closeSignoff()">Cancel</button>
+    <button class="btn btn-green" onclick="closeSignoff()">✓ Sign Off &amp; Approve</button>
+  </div>
+</div>
+</div>
+
+<!-- ============ COMMITTEE ============ -->
+<div class="role-section" id="committee">
+<div class="role-header">⚖️ Committee Dashboard</div>
+<div class="role-sub">Oral Board Review Panel — 2 candidates in queue</div>
+
+<h3 style="color:var(--blue);margin-bottom:0.75rem">Oral Board Queue</h3>
+<div class="card-grid">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:start">
+      <div>
+        <h3>David Park</h3>
+        <p style="color:#666;font-size:0.9rem">Midwest Avionics · 75/75 tasks · Portfolio complete</p>
+      </div>
+      <span class="badge badge-submitted" style="font-size:0.8rem">Ready for Board</span>
+    </div>
+    <p style="font-size:0.85rem;color:#888;margin-top:0.5rem">Evaluator: Lisa Chang (Quality: 97%) · Scheduled: Feb 28, 2026</p>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:start">
+      <div>
+        <h3>Rachel Kim</h3>
+        <p style="color:#666;font-size:0.9rem">Pacific Coast Avionics · 75/75 tasks · Portfolio complete</p>
+      </div>
+      <span class="badge" style="background:#fff3cd;color:#856404;font-size:0.8rem">Pending Schedule</span>
+    </div>
+    <p style="font-size:0.85rem;color:#888;margin-top:0.5rem">Evaluator: Tom Bradley (Quality: 95%) · Not yet scheduled</p>
+  </div>
+</div>
+
+<h3 style="color:var(--blue);margin:1.5rem 0 0.75rem">Oral Board Scoring — David Park</h3>
+<div class="rubric-grid">
+  <div class="rubric-card">
+    <h4>Phase 1: Technical Knowledge</h4>
+    <div class="rubric-score">4</div>
+    <div class="rubric-max">of 5</div>
+    <div class="score-dots">
+      <div class="dot filled">1</div><div class="dot filled">2</div><div class="dot filled">3</div><div class="dot filled">4</div><div class="dot">5</div>
+    </div>
+    <p style="font-size:0.8rem;color:#888;margin-top:0.75rem">Regulatory knowledge, documentation standards, system theory</p>
+  </div>
+  <div class="rubric-card">
+    <h4>Phase 2: Practical Application</h4>
+    <div class="rubric-score">5</div>
+    <div class="rubric-max">of 5</div>
+    <div class="score-dots">
+      <div class="dot filled">1</div><div class="dot filled">2</div><div class="dot filled">3</div><div class="dot filled">4</div><div class="dot filled">5</div>
+    </div>
+    <p style="font-size:0.8rem;color:#888;margin-top:0.75rem">Troubleshooting methodology, hands-on demonstration, tool proficiency</p>
+  </div>
+  <div class="rubric-card">
+    <h4>Phase 3: Professional Standards</h4>
+    <div class="rubric-score">4</div>
+    <div class="rubric-max">of 5</div>
+    <div class="score-dots">
+      <div class="dot filled">1</div><div class="dot filled">2</div><div class="dot filled">3</div><div class="dot filled">4</div><div class="dot">5</div>
+    </div>
+    <p style="font-size:0.8rem;color:#888;margin-top:0.75rem">Communication, safety awareness, industry professionalism</p>
+  </div>
+</div>
+<div class="card" style="margin-top:1rem;text-align:center">
+  <p style="font-size:1.1rem"><strong>Composite Score:</strong> <span style="color:var(--gold);font-weight:800;font-size:1.3rem">4.33 / 5.00</span> <span class="badge badge-signed" style="margin-left:0.5rem">PASS</span></p>
+  <p style="font-size:0.85rem;color:#888;margin-top:0.25rem">Minimum passing score: 3.00</p>
+</div>
+</div>
+
+<!-- ============ ADMIN ============ -->
+<div class="role-section" id="admin">
+<div class="role-header">📊 Admin Dashboard</div>
+<div class="role-sub">Program-wide statistics and management</div>
+
+<div class="mini-stats">
+  <div class="mini-stat"><div class="num">24</div><div class="label">Active Candidates</div></div>
+  <div class="mini-stat"><div class="num">8</div><div class="label">Certified (YTD)</div></div>
+  <div class="mini-stat"><div class="num">6</div><div class="label">Active Evaluators</div></div>
+  <div class="mini-stat"><div class="num">12</div><div class="label">Participating Shops</div></div>
+</div>
+
+<h3 style="color:var(--blue);margin-bottom:0.75rem">Certification Pipeline Funnel</h3>
+<div class="card">
+<div class="funnel">
+  <div class="funnel-row"><div class="funnel-label">Written Exam</div><div class="funnel-bar" style="width:100%;background:var(--blue)">24 candidates</div></div>
+  <div class="funnel-row"><div class="funnel-label">PQS Tasks</div><div class="funnel-bar" style="width:75%;background:var(--blue);opacity:0.85">18 candidates</div></div>
+  <div class="funnel-row"><div class="funnel-label">Portfolio</div><div class="funnel-bar" style="width:33%;background:var(--gold)">8 candidates</div></div>
+  <div class="funnel-row"><div class="funnel-label">Oral Board</div><div class="funnel-bar" style="width:17%;background:var(--orange)">4 candidates</div></div>
+  <div class="funnel-row"><div class="funnel-label">Certified</div><div class="funnel-bar" style="width:8%;background:var(--green)">2 candidates</div></div>
+</div>
+</div>
+
+<h3 style="color:var(--blue);margin:1.5rem 0 0.75rem">All Candidates</h3>
+<div class="card" style="overflow-x:auto">
+<table class="roster-table">
+<thead><tr><th>Candidate</th><th>Shop</th><th>Stage</th><th>Tasks</th><th>Evaluator</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td><strong>David Park</strong></td><td>Midwest Avionics</td><td>Oral Board</td><td>75/75</td><td>Lisa Chang</td><td><span class="badge badge-signed">Board Scheduled</span></td></tr>
+<tr><td><strong>Rachel Kim</strong></td><td>Pacific Coast Avionics</td><td>Oral Board</td><td>75/75</td><td>Tom Bradley</td><td><span class="badge" style="background:#fff3cd;color:#856404">Pending Schedule</span></td></tr>
+<tr><td><strong>Sarah Chen</strong></td><td>Thompson Avionics</td><td>PQS Tasks</td><td>67/75</td><td>Mike Rodriguez</td><td><span class="badge badge-progress">In Progress</span></td></tr>
+<tr><td><strong>James Wilson</strong></td><td>Thompson Avionics</td><td>PQS Tasks</td><td>34/75</td><td>Mike Rodriguez</td><td><span class="badge badge-progress">In Progress</span></td></tr>
+<tr><td><strong>Maria Santos</strong></td><td>Thompson Avionics</td><td>PQS Tasks</td><td>15/75</td><td>Mike Rodriguez</td><td><span class="badge badge-progress">In Progress</span></td></tr>
+<tr><td><strong>Alex Torres</strong></td><td>Gulf Stream Avionics</td><td>PQS Tasks</td><td>52/75</td><td>Sarah Palmer</td><td><span class="badge badge-progress">In Progress</span></td></tr>
+<tr><td><strong>Kevin Hughes</strong></td><td>Northeast Aviation</td><td>Portfolio</td><td>75/75</td><td>Dan Wright</td><td><span class="badge badge-submitted">Building Portfolio</span></td></tr>
+<tr><td><strong>Emma Davis</strong></td><td>SkyTech Solutions</td><td>Written Exam</td><td>0/75</td><td>—</td><td><span class="badge badge-notstarted">Exam Pending</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<h3 style="color:var(--blue);margin:1.5rem 0 0.75rem">Evaluator Quality Metrics</h3>
+<div class="quality-grid">
+  <div class="q-card">
+    <h4>Mike Rodriguez</h4>
+    <div class="q-stat">98%</div>
+    <p style="font-size:0.85rem;color:#888">Quality Score · 142 sign-offs · Thompson Avionics</p>
+    <div class="progress-bar"><div class="fill" style="width:98%"></div></div>
+  </div>
+  <div class="q-card">
+    <h4>Lisa Chang</h4>
+    <div class="q-stat">97%</div>
+    <p style="font-size:0.85rem;color:#888">Quality Score · 89 sign-offs · Midwest Avionics</p>
+    <div class="progress-bar"><div class="fill" style="width:97%"></div></div>
+  </div>
+  <div class="q-card">
+    <h4>Tom Bradley</h4>
+    <div class="q-stat">95%</div>
+    <p style="font-size:0.85rem;color:#888">Quality Score · 112 sign-offs · Pacific Coast Avionics</p>
+    <div class="progress-bar"><div class="fill" style="width:95%"></div></div>
+  </div>
+  <div class="q-card">
+    <h4>Sarah Palmer</h4>
+    <div class="q-stat">96%</div>
+    <p style="font-size:0.85rem;color:#888">Quality Score · 67 sign-offs · Gulf Stream Avionics</p>
+    <div class="progress-bar"><div class="fill" style="width:96%"></div></div>
+  </div>
+  <div class="q-card">
+    <h4>Dan Wright</h4>
+    <div class="q-stat">94%</div>
+    <p style="font-size:0.85rem;color:#888">Quality Score · 203 sign-offs · Northeast Aviation</p>
+    <div class="progress-bar"><div class="fill" style="width:94%"></div></div>
+  </div>
+  <div class="q-card">
+    <h4>Chris Tanaka</h4>
+    <div class="q-stat">99%</div>
+    <p style="font-size:0.85rem;color:#888">Quality Score · 45 sign-offs · SkyTech Solutions</p>
+    <div class="progress-bar"><div class="fill" style="width:99%"></div></div>
+  </div>
+</div>
+</div>
+
+</div><!-- end .content -->
+
+<footer style="background:var(--blue);color:#fff;text-align:center;padding:1.5rem">
+  <p style="font-weight:700">Aircraft Electronics Association</p>
+  <p style="opacity:0.7;font-size:0.85rem">CAET Advanced Tracking Tool — Demo Data · Built by Ace Avionics Training</p>
+</footer>
+
+<script>
+// Progressive enhancement: tab switching
+function switchTab(tab) {
+  // Update buttons
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  // Show/hide sections
+  document.querySelectorAll('.role-section').forEach(s => {
+    s.style.display = (s.id === tab) ? '' : 'none';
+  });
+}
+
+// Collapse section cards by default when JS is available
+document.querySelectorAll('.section-card').forEach(c => c.classList.remove('open'));
+
+// On load, show only technician tab (or hash-defined)
+(function() {
+  var hash = location.hash.replace('#','');
+  var validTabs = ['technician','evaluator','committee','admin'];
+  var tab = validTabs.includes(hash) ? hash : 'technician';
+  switchTab(tab);
+})();
+
+// Sign-off modal
+function openSignoff(name, task) {
+  document.getElementById('signoffInfo').textContent = name + ' — Task ' + task;
+  document.getElementById('signoffModal').classList.add('show');
+}
+function closeSignoff() {
+  document.getElementById('signoffModal').classList.remove('show');
+}
+document.getElementById('signoffModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSignoff();
+});
+</script>
+</body>
+</html>

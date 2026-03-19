@@ -1,0 +1,350 @@
+{
+  "metadata": {
+    "moduleId": "cat-8-shop-safety",
+    "title": "SSP: Shop Safety & Best Practices",
+    "version": "1.0.0",
+    "generatedFrom": "mod8-shop-safety/data/questions.json",
+    "questionCount": 19,
+    "categoryCount": 6
+  },
+  "categories": {
+    "Hazmat Handling": [
+      {
+        "id": "cat8-q001",
+        "clue": "Federal regulations require these documents, which detail chemical hazards and emergency procedures, to be stored where every shop worker can reach them without delay.",
+        "choices": [
+          "Safety Data Sheets (SDS)",
+          "The aircraft maintenance manual",
+          "The shop's insurance policy",
+          "OSHA 300 injury logs"
+        ],
+        "correctIndex": 0,
+        "explanation": "SDS must be readily accessible to ALL personnel who may be exposed \u2014 not restricted to supervisors or specific roles.",
+        "difficulty": 100,
+        "learningObjective": "State that Safety Data Sheets (SDS) for shop chemicals must be kept in an accessible location readily available to all personnel who work with or near hazardous materials.",
+        "source": "CAET Training"
+      },
+      {
+        "id": "cat8-q005",
+        "clue": "These three steps \u2014 checking vent caps, confirming charge state, and using a non-conductive sealed container \u2014 must be completed before moving this type of aircraft battery.",
+        "choices": [
+          "Lead-acid battery transport preparation",
+          "NiCd battery replacement procedure",
+          "Battery load-test readiness check",
+          "Lithium battery shipping compliance"
+        ],
+        "correctIndex": 0,
+        "explanation": "Lead-acid batteries contain sulfuric acid. Tight caps prevent spills, the non-conductive leak-proof container protects against acid contact, and a proper charge state reduces gassing.",
+        "difficulty": 100,
+        "learningObjective": "State the required preparation before transporting a spillable lead-acid battery: ensure caps are tight, the battery is fully charged, and it is secured in a non-conductive, leak-proof container.",
+        "source": "CAET Training"
+      },
+      {
+        "id": "cat8-q007",
+        "clue": "This document, required for every hazardous chemical in the shop, lists the substance's hazards, safe handling procedures, required PPE, and first-aid steps for exposure.",
+        "choices": [
+          "Environmental Impact Assessment",
+          "Aircraft Maintenance Manual (AMM)",
+          "Safety Data Sheet (SDS)",
+          "Material Certification (C of C)"
+        ],
+        "correctIndex": 2,
+        "explanation": "The SDS contains comprehensive safety information for each chemical: hazards, handling procedures, PPE requirements, and first-aid measures \u2014 the product label alone is insufficient.",
+        "difficulty": 200,
+        "learningObjective": "State that the Safety Data Sheet (SDS) is the document containing specific safety information about a chemical solvent, including hazards, handling procedures, and first-aid measures.",
+        "source": "CAET Training"
+      },
+      {
+        "id": "cat8-q002",
+        "clue": "In a GA repair shop, disposing of this type of material requires a licensed vendor and must never involve dumping it down a drain or in the regular trash.",
+        "choices": [
+          "Scrap aluminum shavings",
+          "Hazardous chemical waste",
+          "Used paper towels",
+          "Worn safety gloves (non-contaminated)"
+        ],
+        "correctIndex": 1,
+        "explanation": "Hazardous chemicals must go through licensed disposal vendors following EPA and local regulations \u2014 drains and regular trash are prohibited.",
+        "difficulty": 200,
+        "learningObjective": "Describe proper disposal of hazardous materials in a GA repair environment as following EPA and local regulations, using licensed disposal vendors, and never pouring chemicals into drains or trash.",
+        "source": "CAET Training"
+      },
+      {
+        "id": "cat8-q009",
+        "clue": "These three steps \u2014 containing with absorbent materials, cutting power to nearby electronics, and following hazmat cleanup procedures \u2014 define the correct response to this type of bench-area contamination event.",
+        "choices": [
+          "Hydraulic fluid spill near avionics equipment",
+          "An ESD event at the bench",
+          "A battery electrolyte spill on the tarmac",
+          "A fuel overflow during gravity fill"
+        ],
+        "correctIndex": 0,
+        "explanation": "Hydraulic fluid is flammable and corrosive. You must contain it first, remove electrical power (ignition hazard), then follow established hazmat cleanup procedures.",
+        "difficulty": 300,
+        "learningObjective": "Describe the recommended action for a hydraulic fluid spill near the avionics bench: contain the spill immediately using absorbent materials, remove power from nearby equipment, and clean up per the shop's hazmat procedures.",
+        "source": "CAET Training"
+      },
+      {
+        "id": "cat8-q010",
+        "clue": "Cadmium's toxicity means these rechargeable aircraft batteries cannot be thrown in regular trash and must be handled through hazardous materials disposal channels.",
+        "choices": [
+          "Sealed lead-acid batteries",
+          "Nickel-Cadmium (NiCd) batteries",
+          "Alkaline AA batteries",
+          "Lithium coin cells"
+        ],
+        "correctIndex": 1,
+        "explanation": "Cadmium is a toxic heavy metal \u2014 NiCd batteries must go through regulated hazmat disposal channels regardless of state of charge. Regular trash disposal is prohibited.",
+        "difficulty": 400,
+        "learningObjective": "Describe the accepted procedure for disposing of a Nickel-Cadmium battery: follow local hazardous materials disposal regulations and do not discard in regular trash.",
+        "source": "CAET Training"
+      },
+      {
+        "id": "cat8-q012",
+        "clue": "Reading this document for each chemical before first use gives a new technician the hazards, PPE requirements, and emergency steps needed for safe handling.",
+        "choices": [
+          "The equipment rental agreement",
+          "The shop's floor plan",
+          "The aircraft wiring diagram",
+          "The Safety Data Sheet (SDS)"
+        ],
+        "correctIndex": 3,
+        "explanation": "Different chemicals have different hazards, PPE needs, and first-aid steps. Reading the SDS for EACH chemical before use ensures the technician uses the correct protective measures.",
+        "difficulty": 400,
+        "learningObjective": "State the most important first step for a new technician handling solvents and chemicals: read the SDS for each chemical before use to understand its hazards, required PPE, and emergency procedures.",
+        "source": "CAET Training"
+      },
+      {
+        "id": "cat8-q016",
+        "clue": "Leave the area, get fresh air, notify a supervisor, and file an incident report \u2014 these four steps define the correct response when a technician feels dizzy in this type of chemical exposure situation.",
+        "choices": [
+          "Battery acid splash first aid",
+          "ESD wrist strap malfunction procedure",
+          "Confined space entry emergency exit",
+          "Solvent fume overexposure response"
+        ],
+        "correctIndex": 3,
+        "explanation": "Dizziness from solvent fumes indicates overexposure to toxic vapors. Immediate removal from the area and fresh air is the first priority, followed by supervisor notification and incident reporting.",
+        "difficulty": 500,
+        "learningObjective": "Given a technician feeling dizzy from solvent fumes, determine the most correct response: immediately leave the area, move to fresh air, notify a supervisor, and report the incident per shop safety procedures before returning to work.",
+        "source": "CAET Training"
+      }
+    ],
+    "PPE & Protection": [
+      {
+        "id": "cat8-q017",
+        "clue": "Counting tools at the start and end of every job and immediately retrieving any dropped hardware defines this practice, which is the most effective way to prevent foreign object damage in avionics work.",
+        "choices": [
+          "Strict tool control for FOD prevention",
+          "ESD wrist strap verification",
+          "Pre-installation torque logging",
+          "Wire bundle continuity checking"
+        ],
+        "correctIndex": 0,
+        "explanation": "Tool control is the foundation of FOD prevention \u2014 counting tools before and after every job ensures nothing is left inside an aircraft, and immediate cleanup of dropped hardware prevents items from migrating into aircraft structure.",
+        "difficulty": 100,
+        "learningObjective": "Select strict tool control \u2014 counting tools before and after each job and immediately cleaning up dropped hardware and debris \u2014 as the most effective practice for preventing FOD in an avionics shop.",
+        "source": "CAET Training"
+      },
+      {
+        "id": "cat8-q018",
+        "clue": "A grounded anti-static wrist strap and a specially equipped handling station are the two required safeguards before touching any sensitive avionics component.",
+        "choices": [
+          "High-voltage insulation test setup",
+          "ESD damage prevention requirements",
+          "Battery load-test bench configuration",
+          "Antenna RF exposure safety protocol"
+        ],
+        "correctIndex": 1,
+        "explanation": "ESD damage can be caused by static discharge too small to feel. A grounded wrist strap and ESD-protected workstation are both required to safely handle CMOS and other static-sensitive components.",
+        "difficulty": 200,
+        "learningObjective": "Apply the correct practice to prevent ESD damage to sensitive avionics: use a properly grounded anti-static wrist strap and handle components only at ESD-protected workstations.",
+        "source": "CAET Training"
+      },
+      {
+        "id": "cat8-q019",
+        "clue": "Stop work, find the item before closing the panels, and log the event \u2014 these are the required steps when this type of small fastener goes missing during avionics panel installation.",
+        "choices": [
+          "Panel alignment torque verification",
+          "Tool audit discrepancy procedure",
+          "Dropped screw FOD prevention response",
+          "Safety wire installation protocol"
+        ],
+        "correctIndex": 2,
+        "explanation": "No panel may be closed until the dropped hardware is retrieved. A missing screw inside an aircraft structure is a serious FOD hazard, and the event must be logged per FOD prevention procedures.",
+        "difficulty": 400,
+        "learningObjective": "Given a small screw dropped behind a panel during avionics installation, determine the correct action: stop work, retrieve the screw before closing any panels, and log it as a FOD prevention measure.",
+        "source": "CAET Training"
+      }
+    ],
+    "Fire & Emergency": [
+      {
+        "id": "cat8-q011",
+        "clue": "Verifying this shop safety device involves checking the pressure gauge, confirming the pin and seal are intact, inspecting for damage, and ensuring the annual tag is current.",
+        "choices": [
+          "Emergency shower flow check",
+          "Ground fault circuit interrupter test",
+          "Fire extinguisher readiness inspection",
+          "ESD wrist strap continuity test"
+        ],
+        "correctIndex": 2,
+        "explanation": "All four checks are required: gauge in green zone, intact pin/seal, no physical damage, and a current annual inspection tag \u2014 all must pass for the extinguisher to be considered serviceable.",
+        "difficulty": 100,
+        "learningObjective": "Describe how to check a fire extinguisher's readiness in a GA avionics shop: verify the pressure gauge is in the green zone, inspect the safety pin and tamper seal, check for visible damage, and confirm the annual inspection tag is current.",
+        "source": "CAET Training"
+      },
+      {
+        "id": "cat8-q013",
+        "clue": "The correct sequence for helping an electrical shock victim: verify the area is safe, cut power before touching the person, then summon emergency help \u2014 in that order.",
+        "choices": [
+          "Electrical shock victim first-aid response",
+          "Cardiopulmonary resuscitation (CPR) algorithm",
+          "Chemical burn treatment protocol",
+          "Fainting response procedure"
+        ],
+        "correctIndex": 0,
+        "explanation": "Touching an energized victim can electrocute the rescuer. The first step is to ensure YOUR safety, then disconnect power \u2014 only then is it safe to touch the victim and call for emergency help.",
+        "difficulty": 300,
+        "learningObjective": "Apply the correct first-aid response to an electrical shock victim: ensure the area is safe, disconnect the power source before touching the victim, then call for emergency assistance.",
+        "source": "CAET Training"
+      }
+    ],
+    "Shop Procedures": [
+      {
+        "id": "cat8-q003",
+        "clue": "An avionics tech drops a soldering iron that narrowly misses a coworker and lands harmlessly on the floor. This unplanned event with no injury but real danger potential has a specific safety term.",
+        "choices": [
+          "A tool audit failure",
+          "An acceptable risk",
+          "A near-miss",
+          "An OSHA recordable event"
+        ],
+        "correctIndex": 2,
+        "explanation": "A near-miss is any unplanned event with potential for injury or damage, even if none occurred. Near-misses must be reported and investigated to prevent recurrence.",
+        "difficulty": 100,
+        "learningObjective": "Define a near-miss in a shop safety context as an unplanned event that did not result in injury or damage but had the potential to do so, and state that near-misses must be reported and investigated.",
+        "source": "CAET Training"
+      },
+      {
+        "id": "cat8-q008",
+        "clue": "These three ground rules \u2014 avoid the rear, approach from the front, and wait for the pilot's signal \u2014 define the correct way to approach a running helicopter on the ramp.",
+        "choices": [
+          "Engine run-up clearance protocol",
+          "Pushback crew coordination procedure",
+          "Rotor blade folding checklist",
+          "Rotorcraft approach safety rules"
+        ],
+        "correctIndex": 3,
+        "explanation": "The tail rotor is nearly invisible when spinning and is a lethal hazard. You must approach from the front where the pilot can see you, and only after receiving the go-ahead signal.",
+        "difficulty": 300,
+        "learningObjective": "Describe safe practice around moving rotorcraft: stay clear of the tail rotor, approach only from the front within the pilot's field of view, and never approach until the pilot signals it is safe.",
+        "source": "CAET Training"
+      }
+    ],
+    "ESD Prevention": [
+      {
+        "id": "cat8-q014",
+        "clue": "These self-closing, approved, labeled containers kept in a dedicated cabinet away from sparks are the OSHA-compliant way to store volatile cleaning solvents in an avionics shop.",
+        "choices": [
+          "Standard open-top drum containers",
+          "Flammable liquid safety containers",
+          "General-purpose chemical shelving units",
+          "Cardboard-lined solvent boxes"
+        ],
+        "correctIndex": 1,
+        "explanation": "Flammable liquid storage requires three elements: approved self-closing containers, a dedicated flammable storage cabinet, and separation from ignition sources.",
+        "difficulty": 100,
+        "learningObjective": "State that flammable liquids must be stored in approved, labeled, self-closing safety containers in a dedicated flammable storage cabinet away from ignition sources in an avionics shop.",
+        "source": "CAET Training"
+      },
+      {
+        "id": "cat8-q004",
+        "clue": "This is the first required action when a tech detects a burning electrical odor from an avionics rack during a bench test.",
+        "choices": [
+          "Continue testing to isolate the source",
+          "Grab a fire extinguisher",
+          "Call the fire department",
+          "Remove aircraft power immediately"
+        ],
+        "correctIndex": 3,
+        "explanation": "Burning insulation indicates active electrical damage or fire risk. Power must be removed FIRST before any investigation \u2014 continuing to apply power risks fire or further wiring damage.",
+        "difficulty": 300,
+        "learningObjective": "State the first action when a burning insulation odor is detected in an avionics rack: remove aircraft power immediately and identify the source before any further troubleshooting.",
+        "source": "CAET Training"
+      }
+    ],
+    "FOD Control": [
+      {
+        "id": "cat8-q015",
+        "clue": "This specified range \u2014 6 to 8 per inch \u2014 defines how tightly to apply the double-twist method when installing safety wire on aviation fasteners.",
+        "choices": [
+          "The minimum thread engagement for AN nuts",
+          "The maximum torque tolerance for AN bolts",
+          "The acceptable twist rate for safety wire",
+          "The pitch count for aviation-grade hex bolts"
+        ],
+        "correctIndex": 2,
+        "explanation": "6 to 8 twists per inch is the standard for double-twist safety wire. Too few twists (under 6) are loose and non-compliant; too many (over 8) may kink or weaken the wire.",
+        "difficulty": 100,
+        "learningObjective": "State the acceptable twist rate for the double-twist safety wire method as 6 to 8 twists per inch for standard aviation safety wiring applications.",
+        "source": "CAET Training"
+      },
+      {
+        "id": "cat8-q006",
+        "clue": "Before connecting this high-voltage insulation resistance test instrument, two safety steps are mandatory: verify the circuit is de-energized and discharge all capacitors.",
+        "choices": [
+          "Oscilloscope",
+          "Megohmmeter",
+          "Milliammeter",
+          "LCR meter"
+        ],
+        "correctIndex": 1,
+        "explanation": "Megohmmeters apply high test voltages (500\u20135000 V). If the circuit is live or capacitors hold charge, connecting the meter risks equipment damage or technician injury.",
+        "difficulty": 300,
+        "learningObjective": "Apply the critical safety precaution when using a megohmmeter: ensure the circuit under test is completely de-energized and all capacitors are discharged before connecting the meter.",
+        "source": "CAET Training"
+      }
+    ]
+  },
+  "final": [
+    {
+      "category": "Final Challenge: Hazardous Materials",
+      "clue": "Skydrol (phosphate ester hydraulic fluid), often encountered in large aircraft bays, requires immediate cleaning with soap and water upon skin contact because it is highly corrosive and causes what primary physical symptom?",
+      "choices": [
+        "Instant freezing of tissue",
+        "Intense burning sensation similar to chemical burns",
+        "Painless numbness",
+        "Immediate blistering"
+      ],
+      "correctIndex": 1,
+      "explanation": "Skydrol is notorious for causing intense, painful burning sensations upon contact with skin and, particularly, the eyes. Immediate flushing with water is the required first aid.",
+      "difficulty": 500
+    },
+    {
+      "category": "Final Challenge: Radome Safety",
+      "clue": "Before approaching the radome of a powered-up transport category aircraft on the ramp, you must verify what system is pinned or disabled to prevent potentially lethal RF exposure?",
+      "choices": [
+        "The Weather Radar",
+        "The TCAS transmitters",
+        "The VHF Comm antennas",
+        "The GPS receiver"
+      ],
+      "correctIndex": 0,
+      "explanation": "Weather radar systems emit high-power non-ionizing radiation that can cause severe internal burns. They must be off or disabled via pin before personnel work near the nose of the aircraft.",
+      "difficulty": 500
+    },
+    {
+      "category": "Final Challenge: ESD Protocols",
+      "clue": "When working on highly sensitive avionics LRUs, an ESD wrist strap must be worn. What internal component is built into the wrist strap wire to protect the technician from electrocution if they touch a live power source?",
+      "choices": [
+        "A 1 Amp fuse",
+        "A 1 Megohm resistor",
+        "A grounding busbar",
+        "A diode"
+      ],
+      "correctIndex": 1,
+      "explanation": "A 1M\u03a9 resistor is built into the strap. It allows static electricity to safely bleed to ground, but limits the current to a harmless level (milliamps) if the technician touches 115V AC.",
+      "difficulty": 500
+    }
+  ]
+}

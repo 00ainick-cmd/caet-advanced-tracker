@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAET Advanced Tracking Tool — AEA</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#003366;--blue-d:#001a33;--gold:#C5960C;--gold-l:#f5e6b8;--bg:#f4f7fa;--card:#fff;--text:#1a1a2e;--green:#28a745;--red:#dc3545;--border:#e2e5ea;--shadow:0 2px 12px rgba(0,0,0,0.08);--radius:12px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+a{color:var(--blue);text-decoration:none}
+
+/* Header */
+.header{background:var(--blue);color:#fff;padding:0.8rem 0;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.header-brand{display:flex;align-items:center;gap:0.75rem}
+.header-logo{width:48px;height:48px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;color:var(--blue)}
+.header-title{font-size:1.15rem;font-weight:700;letter-spacing:0.5px}
+.header-subtitle{font-size:0.75rem;opacity:0.8;font-weight:400}
+.header-nav{display:flex;gap:1.5rem;font-size:0.9rem}
+.header-nav a{color:#fff;opacity:0.85;transition:opacity 0.2s}
+.header-nav a:hover{opacity:1}
+
+/* Hero */
+.hero{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-d) 100%);color:#fff;padding:4rem 1.5rem;text-align:center}
+.hero h1{font-size:2.8rem;font-weight:800;margin-bottom:0.5rem}
+.hero .gold{color:var(--gold)}
+.hero p.tagline{font-size:1.25rem;opacity:0.9;max-width:700px;margin:0.5rem auto 2rem}
+.hero-cta{display:inline-block;background:var(--gold);color:var(--blue-d);padding:0.85rem 2.5rem;border-radius:8px;font-weight:700;font-size:1.05rem;transition:transform 0.2s}
+.hero-cta:hover{transform:translateY(-2px)}
+
+/* Stat Strip */
+.stat-strip{background:var(--blue-d);color:#fff;display:flex;justify-content:center;flex-wrap:wrap;gap:2rem;padding:1.2rem 1.5rem}
+.stat-item{text-align:center}
+.stat-num{font-size:1.8rem;font-weight:800;color:var(--gold)}
+.stat-label{font-size:0.8rem;opacity:0.8;text-transform:uppercase;letter-spacing:1px}
+
+/* Sections */
+.section{max-width:1200px;margin:0 auto;padding:3rem 1.5rem}
+.section-title{font-size:1.8rem;font-weight:800;text-align:center;margin-bottom:0.5rem;color:var(--blue)}
+.section-sub{text-align:center;color:#666;margin-bottom:2rem;max-width:700px;margin-left:auto;margin-right:auto}
+
+/* Quick Start Cards */
+.qs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.qs-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem;text-align:center;border-top:4px solid var(--gold);transition:transform 0.2s,box-shadow 0.2s}
+.qs-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.12)}
+.qs-icon{font-size:2.5rem;margin-bottom:1rem}
+.qs-card h3{color:var(--blue);font-size:1.2rem;margin-bottom:0.5rem}
+.qs-card p{color:#555;font-size:0.95rem;margin-bottom:1.2rem}
+.qs-btn{display:inline-block;background:var(--blue);color:#fff;padding:0.55rem 1.5rem;border-radius:6px;font-size:0.9rem;font-weight:600;transition:background 0.2s}
+.qs-btn:hover{background:var(--blue-d)}
+
+/* Pipeline */
+.pipeline{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0.5rem;margin:2rem 0}
+.pipe-step{background:var(--card);border:2px solid var(--border);border-radius:var(--radius);padding:1rem 1.5rem;text-align:center;min-width:140px;position:relative;box-shadow:var(--shadow)}
+.pipe-step .step-num{display:inline-block;background:var(--blue);color:#fff;width:28px;height:28px;border-radius:50%;font-size:0.8rem;line-height:28px;font-weight:700;margin-bottom:0.4rem}
+.pipe-step h4{font-size:0.95rem;color:var(--blue)}
+.pipe-step p{font-size:0.75rem;color:#777}
+.pipe-arrow{font-size:1.5rem;color:var(--gold);font-weight:900}
+
+/* PQS Grid */
+.pqs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+.pqs-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.2rem 1.5rem;border-left:4px solid var(--gold)}
+.pqs-card h4{color:var(--blue);font-size:1rem;margin-bottom:0.25rem}
+.pqs-card .task-count{background:var(--gold-l);color:var(--gold);font-size:0.8rem;font-weight:700;padding:0.15rem 0.6rem;border-radius:20px;display:inline-block}
+
+/* For Shops */
+.shops-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.shop-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem}
+.shop-card h3{color:var(--blue);margin-bottom:0.5rem}
+.shop-card ul{padding-left:1.2rem;color:#555}
+.shop-card ul li{margin-bottom:0.3rem}
+
+/* Footer */
+.footer{background:var(--blue);color:#fff;text-align:center;padding:2rem 1.5rem;margin-top:3rem}
+.footer p{opacity:0.8;font-size:0.9rem}
+.footer .footer-brand{font-weight:700;font-size:1.1rem;margin-bottom:0.5rem}
+
+@media(max-width:768px){
+  .hero h1{font-size:1.8rem}
+  .header-nav{display:none}
+  .pipeline{flex-direction:column}
+  .pipe-arrow{transform:rotate(90deg)}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="header-logo">AEA</div>
+      <div><div class="header-title">CAET Advanced Tracking Tool</div><div class="header-subtitle">Aircraft Electronics Association</div></div>
+    </div>
+    <nav class="header-nav">
+      <a href="#quickstart">Get Started</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#pqs">PQS Sections</a>
+      <a href="demo.html">Live Demo</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>CAET <span class="gold">Advanced</span> Tracking Tool</h1>
+  <p class="tagline">Track every technician through 75 practical tasks, 13 PQS sections, and the complete certification pipeline — from written exam to certified avionics technician.</p>
+  <a href="demo.html" class="hero-cta">Try the Interactive Demo →</a>
+</section>
+
+<div class="stat-strip">
+  <div class="stat-item"><div class="stat-num">75</div><div class="stat-label">Practical Tasks</div></div>
+  <div class="stat-item"><div class="stat-num">13</div><div class="stat-label">PQS Sections</div></div>
+  <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">User Roles</div></div>
+  <div class="stat-item"><div class="stat-num">7</div><div class="stat-label">Portfolio Items</div></div>
+</div>
+
+<section class="section" id="quickstart">
+  <h2 class="section-title">What's Your Role?</h2>
+  <p class="section-sub">The CAET Advanced Tracking Tool serves every stakeholder in the certification process.</p>
+  <div class="qs-grid">
+    <div class="qs-card">
+      <div class="qs-icon">🛠️</div>
+      <h3>I'm a Technician</h3>
+      <p>Track your progress through all 75 practical tasks, build your portfolio, and see exactly where you stand on the path to certification.</p>
+      <a href="demo.html#technician" class="qs-btn">View Technician Dashboard</a>
+    </div>
+    <div class="qs-card">
+      <div class="qs-icon">✅</div>
+      <h3>I'm an Evaluator</h3>
+      <p>Sign off on candidate tasks, manage your roster of technicians, and ensure quality standards are met at every step.</p>
+      <a href="demo.html#evaluator" class="qs-btn">View Evaluator Dashboard</a>
+    </div>
+    <div class="qs-card">
+      <div class="qs-icon">📊</div>
+      <h3>I'm AEA Staff</h3>
+      <p>Monitor the entire pipeline, review oral board candidates, track evaluator quality metrics, and manage the certification program.</p>
+      <a href="demo.html#admin" class="qs-btn">View Admin Dashboard</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how-it-works">
+  <h2 class="section-title">How It Works</h2>
+  <p class="section-sub">Five steps from apprentice to certified avionics technician. The tracking tool monitors every stage.</p>
+  <div class="pipeline">
+    <div class="pipe-step"><div class="step-num">1</div><h4>Written Exam</h4><p>Knowledge test</p></div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step"><div class="step-num">2</div><h4>PQS Tasks</h4><p>75 practical tasks</p></div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step"><div class="step-num">3</div><h4>Portfolio</h4><p>7 evidence items</p></div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step"><div class="step-num">4</div><h4>Oral Board</h4><p>3-phase review</p></div>
+    <div class="pipe-arrow">→</div>
+    <div class="pipe-step" style="border-color:var(--gold);background:var(--gold-l)"><div class="step-num" style="background:var(--gold)">5</div><h4>Certified!</h4><p>CAET Advanced</p></div>
+  </div>
+</section>
+
+<section class="section" id="pqs">
+  <h2 class="section-title">PQS Sections Overview</h2>
+  <p class="section-sub">13 sections covering every core competency for advanced avionics certification.</p>
+  <div class="pqs-grid">
+    <div class="pqs-card"><h4>1. Regulatory Compliance</h4><span class="task-count">4 tasks</span></div>
+    <div class="pqs-card"><h4>2. Maintenance Documentation</h4><span class="task-count">5 tasks</span></div>
+    <div class="pqs-card"><h4>3. Wiring Diagrams</h4><span class="task-count">4 tasks</span></div>
+    <div class="pqs-card"><h4>4. Wire Harness Fabrication</h4><span class="task-count">6 tasks</span></div>
+    <div class="pqs-card"><h4>5. Audio Panel</h4><span class="task-count">5 tasks</span></div>
+    <div class="pqs-card"><h4>6. Navigation</h4><span class="task-count">6 tasks</span></div>
+    <div class="pqs-card"><h4>7. Communication</h4><span class="task-count">4 tasks</span></div>
+    <div class="pqs-card"><h4>8. Transponder / ADS-B</h4><span class="task-count">6 tasks</span></div>
+    <div class="pqs-card"><h4>9. Pitot-Static</h4><span class="task-count">8 tasks</span></div>
+    <div class="pqs-card"><h4>10. Autopilot</h4><span class="task-count">7 tasks</span></div>
+    <div class="pqs-card"><h4>11. Compass</h4><span class="task-count">6 tasks</span></div>
+    <div class="pqs-card"><h4>12. EFB / Connectivity</h4><span class="task-count">6 tasks</span></div>
+    <div class="pqs-card"><h4>13. FMS</h4><span class="task-count">8 tasks</span></div>
+  </div>
+</section>
+
+<section class="section" id="shops">
+  <h2 class="section-title">For Shops &amp; Training Centers</h2>
+  <p class="section-sub">The evaluator model brings certification directly to the bench.</p>
+  <div class="shops-grid">
+    <div class="shop-card">
+      <h3>🏭 Evaluator Model</h3>
+      <p>Qualified evaluators at your shop can sign off on practical tasks as technicians complete them on real aircraft, in real time.</p>
+      <ul>
+        <li>No travel required for task completion</li>
+        <li>Tasks signed off on real work, not simulations</li>
+        <li>Evaluators trained and certified by AEA</li>
+      </ul>
+    </div>
+    <div class="shop-card">
+      <h3>📋 Train-the-Trainer</h3>
+      <p>AEA certifies senior technicians as evaluators through a structured train-the-trainer program, building capacity at every participating shop.</p>
+      <ul>
+        <li>Evaluator certification pathway</li>
+        <li>Quality metrics tracked per evaluator</li>
+        <li>Consistent standards across all shops</li>
+      </ul>
+    </div>
+    <div class="shop-card">
+      <h3>📈 Progress Visibility</h3>
+      <p>Shop managers and AEA staff can see exactly where every technician stands — no guessing, no spreadsheets, no phone calls.</p>
+      <ul>
+        <li>Real-time pipeline dashboard</li>
+        <li>Section-by-section progress tracking</li>
+        <li>Automated readiness notifications</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-brand">Aircraft Electronics Association</div>
+  <p>CAET Advanced Tracking Tool — Built for AEA by Ace Avionics Training</p>
+  <p style="margin-top:0.5rem;font-size:0.8rem;opacity:0.6">© 2025 AEA. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

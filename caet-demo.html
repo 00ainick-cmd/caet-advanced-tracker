@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAET Advanced Tracking Tool — AEA</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS VARIABLES & RESET
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root {
+  --navy: #003366;
+  --navy-dark: #001a33;
+  --navy-light: #004080;
+  --gold: #C5960C;
+  --gold-light: #f5e6b8;
+  --gold-pale: #faf3e0;
+  --bg: #f0f2f5;
+  --card: #ffffff;
+  --text: #1a1a2e;
+  --text-muted: #6b7280;
+  --green: #16a34a;
+  --green-light: #dcfce7;
+  --blue: #2563eb;
+  --blue-light: #dbeafe;
+  --orange: #ea580c;
+  --orange-light: #ffedd5;
+  --red: #dc2626;
+  --red-light: #fee2e2;
+  --border: #e2e5ea;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.04);
+  --radius: 10px;
+  --radius-lg: 14px;
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+html { scroll-behavior: smooth }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--navy); text-decoration: none }
+button { font-family: var(--font-body); cursor: pointer }
+h1,h2,h3,h4,h5 { font-family: var(--font-display); line-height: 1.3 }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+  color: #fff;
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.7rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-brand { display: flex; align-items: center; gap: 0.75rem; cursor: pointer }
+.header-logo {
+  width: 40px; height: 40px;
+  background: var(--gold);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 900; font-size: 0.85rem;
+  color: var(--navy-dark);
+  letter-spacing: -0.5px;
+}
+.header-text .header-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; letter-spacing: 0.3px }
+.header-text .header-sub { font-size: 0.7rem; opacity: 0.7; font-weight: 400 }
+.header-actions { display: flex; align-items: center; gap: 1rem }
+.header-user { font-size: 0.85rem; opacity: 0.85 }
+.btn-reset {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 0.35rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-reset:hover { background: rgba(255,255,255,0.2) }
+.btn-back {
+  background: none; border: none; color: #fff; opacity: 0.8;
+  font-size: 0.85rem; font-weight: 500; padding: 0.3rem 0;
+  transition: opacity 0.2s;
+}
+.btn-back:hover { opacity: 1 }
+
+/* ============================================================
+   LANDING PAGE
+   ============================================================ */
+.hero {
+  background:
+    repeating-linear-gradient(135deg, transparent, transparent 80px, rgba(197,150,12,0.03) 80px, rgba(197,150,12,0.03) 82px),
+    linear-gradient(180deg, var(--navy) 0%, var(--navy-dark) 100%);
+  color: #fff;
+  padding: 4.5rem 1.5rem 3.5rem;
+  text-align: center;
+}
+.hero h1 { font-size: 3rem; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 0.4rem }
+.hero .gold { color: var(--gold) }
+.hero .tagline { font-size: 1.15rem; opacity: 0.85; max-width: 650px; margin: 0 auto 2.5rem; font-weight: 400 }
+.stat-strip {
+  background: var(--navy-dark);
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 2.5rem;
+  padding: 1.2rem 1.5rem;
+  border-bottom: 3px solid var(--gold);
+}
+.stat-item { text-align: center }
+.stat-num { font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; color: var(--gold) }
+.stat-label { font-size: 0.72rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 1.5px; color: #fff }
+
+/* Pipeline graphic */
+.pipeline-section { max-width: 900px; margin: 3rem auto 0; padding: 0 1.5rem }
+.pipeline-section h2 { font-size: 1.5rem; font-weight: 800; text-align: center; color: var(--navy); margin-bottom: 1.5rem }
+.pipeline {
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.4rem;
+  margin-bottom: 3rem;
+}
+.pipe-step {
+  background: var(--card); border: 2px solid var(--border); border-radius: var(--radius);
+  padding: 0.9rem 1.3rem; text-align: center; min-width: 130px;
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+}
+.pipe-num {
+  display: inline-block; background: var(--navy); color: #fff;
+  width: 26px; height: 26px; border-radius: 50%;
+  font-size: 0.75rem; line-height: 26px; font-weight: 700; margin-bottom: 0.3rem;
+}
+.pipe-step h4 { font-size: 0.88rem; color: var(--navy); margin-bottom: 0.1rem }
+.pipe-step p { font-size: 0.72rem; color: var(--text-muted) }
+.pipe-arrow { font-size: 1.3rem; color: var(--gold); font-weight: 900 }
+
+/* Role cards */
+.roles-section { max-width: 1000px; margin: 0 auto; padding: 0 1.5rem 4rem }
+.roles-section h2 { font-size: 1.5rem; font-weight: 800; text-align: center; color: var(--navy); margin-bottom: 0.4rem }
+.roles-section .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem }
+.role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem }
+.role-card {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.role-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+.role-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--gold) }
+.role-card:hover::before { transform: scaleX(1) }
+.role-icon { font-size: 2.2rem; margin-bottom: 0.8rem }
+.role-card h3 { font-size: 1.15rem; color: var(--navy); margin-bottom: 0.3rem }
+.role-card .role-name { font-size: 0.82rem; color: var(--gold); font-weight: 600; margin-bottom: 0.4rem }
+.role-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5 }
+
+/* ============================================================
+   DASHBOARD LAYOUT
+   ============================================================ */
+.dashboard { max-width: 1200px; margin: 0 auto; padding: 1.5rem }
+.dash-header { margin-bottom: 1.5rem }
+.dash-header h2 { font-size: 1.6rem; font-weight: 800; color: var(--navy); display: flex; align-items: center; gap: 0.5rem }
+.dash-header .dash-sub { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.2rem }
+
+/* Cards */
+.card {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.card h3 { color: var(--navy); font-size: 1.05rem; margin-bottom: 0.75rem }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1rem }
+
+/* Mini stats */
+.mini-stats { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem }
+.mini-stat {
+  background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 1rem 1.3rem; flex: 1; min-width: 130px; text-align: center;
+}
+.mini-stat .num { font-family: var(--font-display); font-size: 1.7rem; font-weight: 800 }
+.mini-stat .label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 0.15rem }
+
+/* Progress ring */
+.progress-ring-wrap { text-align: center; margin-bottom: 1.5rem }
+.progress-ring { position: relative; display: inline-block; width: 150px; height: 150px }
+.progress-ring svg { transform: rotate(-90deg) }
+.progress-ring circle { fill: none; stroke-width: 11 }
+.progress-ring .bg-ring { stroke: var(--border) }
+.progress-ring .fg-ring { stroke: var(--gold); stroke-linecap: round; transition: stroke-dashoffset 1s ease }
+.progress-ring .pct {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--navy);
+}
+.progress-ring .pct small { display: block; font-size: 0.7rem; font-weight: 400; color: var(--text-muted) }
+
+/* Pipeline steps (horizontal) */
+.pipeline-steps { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.5rem }
+.p-step {
+  flex: 1; min-width: 90px; text-align: center;
+  padding: 0.6rem 0.5rem; border-radius: 8px;
+  font-size: 0.8rem; font-weight: 600;
+  transition: all 0.3s;
+}
+.p-step.done { background: var(--green-light); color: var(--green) }
+.p-step.current { background: var(--gold-pale); color: var(--gold); border: 2px solid var(--gold) }
+.p-step.pending { background: #f0f0f0; color: #aaa }
+
+/* ============================================================
+   SECTION CARDS (PQS)
+   ============================================================ */
+.section-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--gold);
+  margin-bottom: 0.65rem;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.section-card:hover { box-shadow: var(--shadow-lg) }
+.sec-header {
+  padding: 0.9rem 1.3rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  user-select: none;
+}
+.sec-header h4 { font-size: 0.92rem; color: var(--navy) }
+.sec-meta { display: flex; align-items: center; gap: 0.75rem; font-size: 0.82rem; color: var(--text-muted) }
+.sec-meta .count { font-weight: 600 }
+.sec-meta .chevron { transition: transform 0.25s; font-size: 0.7rem }
+.section-card.open .chevron { transform: rotate(180deg) }
+.sec-body { display: none; border-top: 1px solid var(--border) }
+.section-card.open .sec-body { display: block }
+.sec-complete .sec-header h4 { color: var(--green) }
+
+/* Section tabs */
+.sec-tabs { display: flex; border-bottom: 1px solid var(--border); background: #fafbfc }
+.sec-tab {
+  padding: 0.55rem 1.2rem; font-size: 0.8rem; font-weight: 600;
+  color: var(--text-muted); background: none; border: none;
+  border-bottom: 2px solid transparent; transition: all 0.2s;
+}
+.sec-tab:hover { color: var(--navy) }
+.sec-tab.active { color: var(--navy); border-bottom-color: var(--gold) }
+.sec-tab-content { display: none; padding: 0.75rem 1.3rem }
+.sec-tab-content.active { display: block }
+
+/* Progress bar */
+.progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; width: 80px }
+.progress-bar .fill { height: 100%; border-radius: 3px; transition: width 0.5s ease }
+.fill-green { background: var(--green) }
+.fill-gold { background: var(--gold) }
+.fill-blue { background: var(--blue) }
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.84rem }
+.data-table th {
+  text-align: left; padding: 0.5rem 1rem; background: #f8f9fb;
+  color: var(--text-muted); font-weight: 600; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border);
+}
+.data-table td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); vertical-align: middle }
+.data-table tr:last-child td { border-bottom: none }
+.data-table tr:hover td { background: #f8f9fb }
+.td-desc { max-width: 400px }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 0.15rem 0.65rem; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 600; white-space: nowrap;
+}
+.badge-signed { background: var(--green-light); color: var(--green) }
+.badge-submitted { background: var(--blue-light); color: var(--blue) }
+.badge-progress { background: var(--orange-light); color: var(--orange) }
+.badge-notstarted { background: #f0f0f0; color: #999 }
+.badge-needswork { background: var(--red-light); color: var(--red) }
+
+/* ============================================================
+   PORTFOLIO
+   ============================================================ */
+.portfolio-list { list-style: none }
+.portfolio-item {
+  padding: 0.65rem 0; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem;
+  cursor: pointer; transition: background 0.15s; padding-left: 0.5rem; padding-right: 0.5rem;
+  border-radius: 6px;
+}
+.portfolio-item:hover { background: #f8f9fb }
+.portfolio-item:last-child { border-bottom: none }
+.check-icon { font-size: 1.1rem }
+.check-on { color: var(--green) }
+.check-off { color: #ddd }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-block; padding: 0.45rem 1.1rem; border-radius: 7px;
+  font-size: 0.84rem; font-weight: 600; border: none;
+  transition: all 0.2s; cursor: pointer; font-family: var(--font-body);
+}
+.btn-primary { background: var(--navy); color: #fff }
+.btn-primary:hover { background: var(--navy-light) }
+.btn-gold { background: var(--gold); color: #fff }
+.btn-gold:hover { background: #b8860b }
+.btn-success { background: var(--green); color: #fff }
+.btn-success:hover { background: #15803d }
+.btn-danger { background: var(--red); color: #fff }
+.btn-danger:hover { background: #b91c1c }
+.btn-outline {
+  background: transparent; color: var(--navy);
+  border: 1.5px solid var(--border);
+}
+.btn-outline:hover { border-color: var(--navy); background: #f8f9fb }
+.btn-sm { padding: 0.3rem 0.8rem; font-size: 0.78rem }
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,20,40,0.55); backdrop-filter: blur(3px);
+  z-index: 200; align-items: center; justify-content: center;
+}
+.modal-overlay.show { display: flex }
+.modal {
+  background: var(--card); border-radius: var(--radius-lg);
+  padding: 2rem; max-width: 540px; width: 92%;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+  animation: modalIn 0.25s ease;
+  max-height: 85vh; overflow-y: auto;
+}
+@keyframes modalIn { from { opacity:0; transform: translateY(10px) scale(0.98) } to { opacity:1; transform: none } }
+.modal h3 { font-size: 1.15rem; color: var(--navy); margin-bottom: 0.3rem }
+.modal .modal-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem }
+.modal label { display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.25rem; margin-top: 1rem; font-weight: 600 }
+.modal input, .modal textarea, .modal select {
+  width: 100%; padding: 0.55rem 0.75rem; border: 1.5px solid var(--border);
+  border-radius: 7px; font-size: 0.9rem; font-family: var(--font-body);
+  transition: border-color 0.2s;
+}
+.modal input:focus, .modal textarea:focus, .modal select:focus { outline: none; border-color: var(--gold) }
+.modal textarea { height: 80px; resize: vertical }
+.modal-actions { margin-top: 1.5rem; display: flex; gap: 0.75rem; justify-content: flex-end }
+.modal-detail { background: #f8f9fb; border-radius: 8px; padding: 1rem; margin: 0.75rem 0; font-size: 0.88rem }
+.modal-detail strong { color: var(--navy); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px }
+
+/* ============================================================
+   COMMITTEE RUBRIC
+   ============================================================ */
+.rubric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.5rem }
+.rubric-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; text-align: center }
+.rubric-card h4 { color: var(--navy); font-size: 0.95rem; margin-bottom: 0.75rem }
+.rubric-score { font-family: var(--font-display); font-size: 2.5rem; font-weight: 800; color: var(--gold) }
+.rubric-max { font-size: 0.82rem; color: var(--text-muted) }
+.score-dots { display: flex; justify-content: center; gap: 0.5rem; margin: 0.75rem 0 }
+.dot {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid var(--border); display: inline-flex;
+  align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 700; cursor: pointer;
+  transition: all 0.2s;
+}
+.dot:hover { border-color: var(--gold); transform: scale(1.1) }
+.dot.filled { background: var(--gold); border-color: var(--gold); color: #fff }
+.rubric-comments { width: 100%; margin-top: 0.5rem; padding: 0.5rem; border: 1.5px solid var(--border); border-radius: 7px; font-size: 0.85rem; font-family: var(--font-body); height: 60px; resize: vertical }
+.rubric-comments:focus { outline: none; border-color: var(--gold) }
+
+/* Decision area */
+.decision-area { background: #f8f9fb; border-radius: var(--radius); padding: 1.5rem; margin: 1.5rem 0 }
+.decision-area h3 { font-size: 1rem; margin-bottom: 1rem }
+.radio-group { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem }
+.radio-opt {
+  padding: 0.6rem 1.2rem; border: 2px solid var(--border); border-radius: 8px;
+  font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  background: var(--card);
+}
+.radio-opt:hover { border-color: var(--navy) }
+.radio-opt.selected { border-color: var(--gold); background: var(--gold-pale); color: var(--navy) }
+
+/* ============================================================
+   ADMIN FUNNEL
+   ============================================================ */
+.funnel { margin: 1.5rem 0 }
+.funnel-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.6rem }
+.funnel-label { min-width: 140px; font-size: 0.88rem; font-weight: 600; text-align: right; color: var(--text-muted) }
+.funnel-bar {
+  height: 34px; border-radius: 6px; display: flex; align-items: center;
+  padding: 0 1rem; color: #fff; font-weight: 700; font-size: 0.85rem;
+  transition: width 0.8s ease;
+}
+.funnel-count { margin-left: auto; font-weight: 400; opacity: 0.85; font-size: 0.8rem }
+
+/* Quality cards */
+.quality-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem }
+.q-card {
+  background: var(--card); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 1.2rem;
+}
+.q-card h4 { font-size: 0.9rem; color: var(--navy); margin-bottom: 0.3rem }
+.q-card .q-sub { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem }
+.q-card .q-stat { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--gold) }
+
+/* ============================================================
+   FILTER BAR
+   ============================================================ */
+.filter-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem }
+.filter-btn {
+  padding: 0.35rem 0.9rem; border-radius: 20px;
+  font-size: 0.8rem; font-weight: 600; border: 1.5px solid var(--border);
+  background: var(--card); color: var(--text-muted); cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-btn:hover { border-color: var(--navy); color: var(--navy) }
+.filter-btn.active { background: var(--navy); color: #fff; border-color: var(--navy) }
+
+/* Fundamentals / Risks lists */
+.fund-list, .risk-list { list-style: none; padding: 0 }
+.fund-list li, .risk-list li {
+  padding: 0.5rem 0; border-bottom: 1px solid var(--border);
+  font-size: 0.88rem; display: flex; gap: 0.5rem;
+}
+.fund-list li:last-child, .risk-list li:last-child { border-bottom: none }
+.fund-num { font-weight: 700; color: var(--navy); min-width: 40px; font-size: 0.82rem }
+.risk-icon { color: var(--orange); min-width: 20px }
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+#toast-container {
+  position: fixed; top: 80px; right: 1.5rem; z-index: 300;
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.toast {
+  background: var(--card); border-radius: 8px; padding: 0.75rem 1.2rem;
+  box-shadow: var(--shadow-lg); font-size: 0.88rem; font-weight: 500;
+  transform: translateX(120%); transition: transform 0.3s ease;
+  border-left: 4px solid var(--green); max-width: 340px;
+}
+.toast.show { transform: translateX(0) }
+.toast-success { border-left-color: var(--green) }
+.toast-info { border-left-color: var(--blue) }
+.toast-warning { border-left-color: var(--orange) }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+  color: #fff; text-align: center; padding: 2rem 1.5rem; margin-top: 2rem;
+}
+.footer .footer-brand { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin-bottom: 0.3rem }
+.footer p { opacity: 0.7; font-size: 0.85rem }
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+.fade-in { animation: fadeIn 0.4s ease forwards }
+.stagger-1 { animation-delay: 0.05s; opacity: 0 }
+.stagger-2 { animation-delay: 0.1s; opacity: 0 }
+.stagger-3 { animation-delay: 0.15s; opacity: 0 }
+.stagger-4 { animation-delay: 0.2s; opacity: 0 }
+.stagger-5 { animation-delay: 0.25s; opacity: 0 }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2rem }
+  .hero .tagline { font-size: 1rem }
+  .pipeline { flex-direction: column }
+  .pipe-arrow { transform: rotate(90deg) }
+  .role-grid { grid-template-columns: 1fr 1fr }
+  .mini-stats { gap: 0.5rem }
+  .mini-stat { min-width: 100px; padding: 0.75rem }
+  .pipeline-steps { flex-direction: column }
+  .card-grid { grid-template-columns: 1fr }
+  .rubric-grid { grid-template-columns: 1fr }
+  .header-user { display: none }
+  .funnel-label { min-width: 80px; font-size: 0.78rem }
+}
+@media (max-width: 480px) {
+  .role-grid { grid-template-columns: 1fr }
+  .stat-strip { gap: 1rem }
+}
+
+/* Utility */
+.hidden { display: none !important }
+.text-center { text-align: center }
+.mt-1 { margin-top: 1rem }
+.mb-1 { margin-bottom: 1rem }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+<div id="toast-container"></div>
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)hideModal()"></div>
+
+<script>
+/* ============================================================
+   PQS DATA — All 13 Sections, 75 Tasks
+   ============================================================ */
+const PQS = [
+  {
+    num:1, title:'Regulatory Compliance and Approved Data',
+    objective:'Demonstrate understanding of the regulatory framework for avionics maintenance and the ability to identify and use approved data.',
+    fundamentals:[
+      '14 CFR Part 43: Who can perform maintenance, what requires approval',
+      '14 CFR Part 91.403: Owner/operator maintenance responsibility',
+      'Approved data: manufacturer data, STCs, AC 43.13-1B, field approvals',
+      'When an STC is required vs. when AC 43.13-1B authority applies',
+      'Part 145 repair station privileges and limitations',
+      'Airworthiness Directives: how to check, compliance requirements'
+    ],
+    risks:[
+      'Performing work without proper approved data (legal liability)',
+      'Assuming AC 43.13-1B covers everything (it doesn\'t)',
+      'Missing applicable ADs during installation',
+      'Working outside the scope of your authorization'
+    ],
+    tasks:[
+      {id:'1.4.1',d:'Given an avionics installation scenario, determine what approved data is required: STC, manufacturer instructions, or AC 43.13-1B.',s:'Correct determination with explanation'},
+      {id:'1.4.2',d:'Look up whether any ADs apply to a specified avionics unit. Document the search method and results.',s:'AD search completed correctly; results documented'},
+      {id:'1.4.3',d:'Explain the difference between a major alteration and a minor alteration. Give examples of each in avionics.',s:'Distinction explained correctly with relevant examples'},
+      {id:'1.4.4',d:'Identify what approvals and documentation would be required to install a GPS navigator in an aircraft that doesn\'t have one.',s:'Correct identification of STC/approval requirements'}
+    ]
+  },
+  {
+    num:2, title:'Maintenance Documentation',
+    objective:'Demonstrate the ability to properly document avionics maintenance, inspections, and installations in accordance with regulatory requirements.',
+    fundamentals:[
+      'Logbook entry requirements per 14 CFR 43.9 and 43.11',
+      'What must be included in a maintenance record entry',
+      'FAA Form 337: when required, how to complete',
+      'Return-to-service statements: who can sign, what they mean',
+      'Work order documentation: shop practices, customer records',
+      'Record retention requirements'
+    ],
+    risks:[
+      'Incomplete logbook entries creating legal exposure',
+      'Missing 337 for major alterations',
+      'Signing off work you didn\'t perform or supervise',
+      'Failing to reference approved data in the logbook entry'
+    ],
+    tasks:[
+      {id:'2.4.1',d:'Write a logbook entry for a transponder inspection per 91.413. Include all required elements.',s:'Entry contains all required elements per 43.9'},
+      {id:'2.4.2',d:'Write a logbook entry for a pitot-static test per 91.411. Include all required elements.',s:'Entry contains all required elements per 43.9'},
+      {id:'2.4.3',d:'Given a completed avionics installation, write the maintenance record entry including reference to approved data.',s:'Entry complete; approved data properly referenced'},
+      {id:'2.4.4',d:'Complete FAA Form 337 for a major alteration (GPS or autopilot installation). All blocks filled correctly.',s:'Form 337 complete and accurate'},
+      {id:'2.4.5',d:'Explain who can sign a return-to-service statement and what that signature means legally.',s:'Correct explanation of authorization and responsibility'}
+    ]
+  },
+  {
+    num:3, title:'Wiring Diagrams and Aircraft Drawings',
+    objective:'Demonstrate the ability to read, interpret, and apply aircraft wiring diagrams and installation drawings.',
+    fundamentals:[
+      'Common drawing symbols used in avionics wiring diagrams',
+      'Wire identification methods (color codes, wire numbers, labels)',
+      'Drawing types: block diagrams, schematic diagrams, wiring diagrams, interconnect diagrams',
+      'How to locate current revision of manufacturer installation manuals',
+      'Service Bulletin and Service Letter interpretation',
+      'Wire gauge selection based on current load and length (AC 43.13-1B)',
+      'Connector pin-out diagrams and how to trace signal paths'
+    ],
+    risks:[
+      'Using outdated or superseded installation drawings',
+      'Misinterpreting wire gauge requirements leading to undersized wire',
+      'Incorrect connector pin assignments causing system malfunction',
+      'Failure to verify drawing applies to specific aircraft serial number'
+    ],
+    tasks:[
+      {id:'3.4.1',d:'Given an avionics wiring diagram, identify: wire types/gauges, connector pin assignments, ground points, circuit breaker locations.',s:'Correctly identify all four elements within 10 minutes'},
+      {id:'3.4.2',d:'Given an installation drawing and a physical installation, identify two intentional discrepancies.',s:'Identify both discrepancies and explain the issue'},
+      {id:'3.4.3',d:'Locate the current revision of an installation manual for a specified avionics unit. Verify it applies to a given aircraft.',s:'Correct manual located; applicability verified'},
+      {id:'3.4.4',d:'Given a Service Bulletin, determine if it applies to a specific aircraft and identify required parts and estimated labor.',s:'Applicability determined correctly; parts and labor identified'}
+    ]
+  },
+  {
+    num:4, title:'Wire Harness Fabrication and Testing',
+    objective:'Demonstrate the ability to fabricate aircraft wire harnesses to industry standards, perform proper terminations, and verify integrity.',
+    fundamentals:[
+      'Wire types used in GA/BA aircraft: shielded, coaxial, twisted pair',
+      'Crimp terminal selection and proper crimping technique per AC 43.13-1B',
+      'Shield termination methods: pigtail and drain wire',
+      'Coaxial cable connector installation (BNC, TNC, SMA)',
+      'Wire bundling methods: lacing cord, spiral wrap, and cable ties',
+      'Heat shrink tubing selection and application',
+      'Wire labeling requirements',
+      'Multimeter use: continuity, resistance, and voltage checks',
+      'Megohmmeter use: insulation resistance testing and safety precautions'
+    ],
+    risks:[
+      'Incorrect crimp die or terminal selection for wire gauge',
+      'Over-stripping insulation leaving exposed conductor behind terminal',
+      'Inadequate shield coverage allowing interference',
+      'Applying megohmmeter voltage to sensitive avionics (remove unit first)',
+      'Heat shrink not fully recovered (cold spots, gaps)',
+      'Cable ties over-tightened causing insulation damage'
+    ],
+    tasks:[
+      {id:'4.4.1',d:'Fabricate a wire harness section: one shielded wire with drain wire, one standard wire run, one coaxial cable with connector.',s:'Harness passes visual inspection per AC 43.13-1B standards'},
+      {id:'4.4.2',d:'Demonstrate proper crimp technique: select correct terminal, crimp, perform pull test, and visually inspect.',s:'Terminal correctly selected; crimp passes pull test; visually acceptable'},
+      {id:'4.4.3',d:'Bundle and secure a wire harness using cable ties. Demonstrate proper tie installation without over-tightening.',s:'Bundle neat; no insulation damage; ties properly trimmed'},
+      {id:'4.4.4',d:'Using a multimeter, check continuity of a wire from one connector pin to another. State what reading indicates good continuity.',s:'Correct meter setup; reading obtained; acceptable value stated'},
+      {id:'4.4.5',d:'Using a megohmmeter, perform insulation resistance test on a wire. Demonstrate safety precautions.',s:'Safety steps followed; correct setup; result interpreted'},
+      {id:'4.4.6',d:'Given a harness with an inserted fault (open or short), use a multimeter to locate the fault.',s:'Fault correctly located within 10 minutes'}
+    ]
+  },
+  {
+    num:5, title:'Audio Panel and Intercom Systems',
+    objective:'Demonstrate the ability to configure, test, and troubleshoot aircraft audio panels and intercom systems.',
+    fundamentals:[
+      'Audio panel functions: transmit selection, receiver selection, intercom',
+      'Microphone and headset connector types (PJ-055, PJ-068, GA twin plug, LEMO)',
+      'Intercom modes: isolated, crew, all',
+      'Marker beacon system: function, antenna location, audio/visual indications',
+      'Sidetone: what it is and why it matters',
+      'Emergency/failsafe audio provisions'
+    ],
+    risks:[
+      'Transmitting on wrong frequency due to incorrect audio panel setup',
+      'Missing ATC calls due to receiver not selected',
+      'Intercom bleed allowing passengers to transmit inadvertently',
+      'Stuck mic condition blocking frequency'
+    ],
+    tasks:[
+      {id:'5.4.1',d:'Configure audio panel for: transmit on COM1, receive on COM1 and COM2, intercom in crew-isolated mode.',s:'Correct configuration; clear explanation'},
+      {id:'5.4.2',d:'Identify the audio panel jacks: explain difference between mic and headphone connections and signal flow.',s:'Jacks correctly identified; signal flow explained'},
+      {id:'5.4.3',d:'Perform functional check: verify transmit on COM1 using handheld radio, verify receive on COM2, verify intercom.',s:'All three verified functional'},
+      {id:'5.4.4',d:'Identify the marker beacon antenna location. Explain the three marker types and their indications.',s:'Antenna located; O/M/I markers explained correctly'},
+      {id:'5.4.5',d:'Troubleshoot a \'no transmit\' squawk: systematically check audio panel selection, PTT switch, mic connection, and COM radio.',s:'Systematic approach; fault isolated or cleared'}
+    ]
+  },
+  {
+    num:6, title:'Navigation Systems',
+    objective:'Demonstrate the ability to configure, verify, and test aircraft navigation systems including VOR, ILS, and GPS receivers.',
+    fundamentals:[
+      'VOR operation: radials, TO/FROM indication, CDI deflection, OBS function',
+      'ILS operation: localizer, glideslope, and how they display on the indicator',
+      'GPS/GNSS basics: WAAS, LPV approaches, RAIM',
+      'CDI scaling differences: VOR (\u00b110\u00b0), GPS (\u00b11nm enroute, \u00b10.3nm approach), ILS',
+      'Navigation database currency requirements and how to check expiration',
+      'NAV antenna types and locations: VOR, glideslope, GPS'
+    ],
+    risks:[
+      'Flying with expired navigation database',
+      'Misinterpreting CDI scale (GPS vs VOR)',
+      'ILS approach with wrong frequency or incorrect course setting',
+      'GPS position error due to antenna obstruction or failure'
+    ],
+    tasks:[
+      {id:'6.4.1',d:'Tune a VOR frequency, set the OBS, and interpret the CDI for: on course, left of course, right of course.',s:'Correct tuning; all three interpretations correct; TO/FROM explained'},
+      {id:'6.4.2',d:'Tune an ILS frequency and explain: how localizer displays, how glideslope displays, how to identify the ILS by audio.',s:'Correct tuning; localizer/glideslope/ident explained'},
+      {id:'6.4.3',d:'On a GPS navigator: check database currency, locate expiration date, explain what happens if database expires.',s:'Currency verified; expiration found; consequences explained'},
+      {id:'6.4.4',d:'Identify the VOR, GPS, and glideslope antenna locations on the aircraft.',s:'All three antennas correctly identified'},
+      {id:'6.4.5',d:'Explain WAAS: what it provides, how to verify it\'s working, and what LPV approach capability means.',s:'WAAS function, verification, and LPV explained correctly'},
+      {id:'6.4.6',d:'Using ramp test equipment, verify VOR receiver accuracy. Document the radial error.',s:'Test performed correctly; error documented; tolerance applied'}
+    ]
+  },
+  {
+    num:7, title:'Communication Systems',
+    objective:'Demonstrate the ability to verify and troubleshoot aircraft VHF communication systems including antenna system checks.',
+    fundamentals:[
+      'VHF COM frequency range and channel spacing',
+      'Basic transmitter checks: ability to transmit, audio quality',
+      'Basic receiver checks: ability to receive, squelch function',
+      'VSWR: what it indicates about the antenna system',
+      'COM antenna types and mounting considerations',
+      'Emergency frequency 121.5 MHz'
+    ],
+    risks:[
+      'Transmitting with bad antenna causing poor range or radio damage',
+      'Poor antenna bonding causing receive noise or weak transmit',
+      'Stuck mic blocking frequency for other aircraft'
+    ],
+    tasks:[
+      {id:'7.4.1',d:'Perform COM radio functional check: transmit to handheld/ramp radio, receive a transmission, verify squelch operation.',s:'Transmit/receive verified; squelch demonstrated'},
+      {id:'7.4.2',d:'Identify COM antenna locations on the aircraft. Explain why antenna location and bonding matter.',s:'Antennas identified; bonding importance explained'},
+      {id:'7.4.3',d:'Measure VSWR of the COM antenna system using a VSWR meter or antenna analyzer.',s:'Correct measurement; limit stated (typically less than 2:1)'},
+      {id:'7.4.4',d:'Troubleshoot a \'weak transmit\' or \'poor radio range\' squawk. Check antenna connections, coax, VSWR, transmitter output.',s:'Systematic approach; findings documented'}
+    ]
+  },
+  {
+    num:8, title:'Transponder and ADS-B Systems',
+    objective:'Demonstrate the ability to test and verify aircraft transponder and ADS-B systems in accordance with regulatory requirements.',
+    fundamentals:[
+      'Transponder modes: A (squawk code), C (altitude), S (24-bit address)',
+      'ADS-B Out: what data it broadcasts, regulatory requirements (91.225, 91.227)',
+      'Transponder test requirements: 14 CFR 91.413, 24-month cycle',
+      'Altitude encoder: what it does, correlation with altimeter',
+      'Transponder antenna types and diversity systems',
+      'Emergency squawk codes: 7500, 7600, 7700'
+    ],
+    risks:[
+      'ADS-B broadcasting incorrect tail number or position',
+      'Altitude encoding error exceeding 125-foot tolerance',
+      'Transponder reply issues causing loss of ATC radar identification',
+      'Incorrect 24-bit ICAO address configuration'
+    ],
+    tasks:[
+      {id:'8.4.1',d:'Explain transponder modes A, C, and S. Demonstrate mode selection. State the emergency squawk codes.',s:'Modes explained; selection demonstrated; codes stated'},
+      {id:'8.4.2',d:'Identify transponder antenna location(s). For diversity systems, explain how the system works.',s:'Antenna(s) identified; diversity explained if applicable'},
+      {id:'8.4.3',d:'Verify altitude encoder output matches altimeter indication within 125 feet.',s:'Correlation verified; corrective action explained'},
+      {id:'8.4.4',d:'Using approved test equipment, perform transponder test per 14 CFR 91.413: Mode A reply, Mode C altitude, Mode S address.',s:'All modes tested; results documented'},
+      {id:'8.4.5',d:'Verify ADS-B Out operation: confirm GPS source, aircraft identification, and squawk code are broadcast correctly.',s:'ADS-B data elements verified'},
+      {id:'8.4.6',d:'Complete a transponder test data form with all required information.',s:'Form complete; all required data present'}
+    ]
+  },
+  {
+    num:9, title:'Pitot-Static Systems',
+    objective:'Demonstrate the ability to test and troubleshoot aircraft pitot-static systems in accordance with regulatory requirements.',
+    fundamentals:[
+      'Pitot-static instruments: airspeed indicator, altimeter, vertical speed indicator',
+      'Pitot system: pitot tube function, pitot heat, drain hole',
+      'Static system: static ports, alternate static source',
+      'Altimeter test requirements: 14 CFR 91.411, 24-month cycle',
+      'Leak testing: static system leak rate limits, pitot system checks',
+      'Altitude encoder correlation requirements'
+    ],
+    risks:[
+      'Applying excessive pressure or vacuum causing instrument damage',
+      'Static system leak causing altitude errors',
+      'Blocked pitot tube from insects, covers left on, or ice',
+      'Pitot heat failure leading to icing in IMC'
+    ],
+    tasks:[
+      {id:'9.4.1',d:'Connect pitot-static test equipment to the aircraft. Demonstrate proper adapter selection and leak-free connections.',s:'Correct adapters; connections verified leak-free'},
+      {id:'9.4.2',d:'Perform static system leak test: apply 1,000 feet, hold, measure leak rate. State the maximum allowable leak rate.',s:'Test performed; leak rate stated (100 ft/min max)'},
+      {id:'9.4.3',d:'Perform pitot system check: apply airspeed, verify ASI responds correctly.',s:'ASI responds appropriately to applied pressure'},
+      {id:'9.4.4',d:'Check altimeter accuracy at three test altitudes. Document scale error at each point.',s:'Three points tested; errors documented'},
+      {id:'9.4.5',d:'Verify altitude encoder correlation with altimeter at three altitudes. State acceptable tolerance.',s:'Correlation verified; \u00b1125 feet tolerance stated'},
+      {id:'9.4.6',d:'Perform pitot heat functional check: apply power, verify element heats.',s:'Heat verified; verification method explained'},
+      {id:'9.4.7',d:'Given a \'static system leak\' squawk, describe a systematic approach to isolate the leak location.',s:'Logical troubleshooting approach described'},
+      {id:'9.4.8',d:'Complete altimeter/static system test documentation per 14 CFR 91.411 requirements.',s:'Documentation complete with all required elements'}
+    ]
+  },
+  {
+    num:10, title:'Autopilot Systems',
+    objective:'Demonstrate the ability to verify and troubleshoot aircraft autopilot systems for safe operation.',
+    fundamentals:[
+      'Basic autopilot architecture: controller, computer, servos',
+      'Autopilot modes: heading, altitude hold, NAV tracking, approach',
+      'Servo types and clutch engagement',
+      'Autopilot disconnect methods: control wheel, panel button, trim interrupt',
+      'Electric trim: manual trim, autopilot-commanded trim, runaway protection',
+      'Flight director vs autopilot: how they differ'
+    ],
+    risks:[
+      'Autopilot malfunction causing uncommanded pitch or roll',
+      'Servo clutch failure causing binding or no response',
+      'Trim runaway leading to loss of control',
+      'Failure to disengage autopilot when required'
+    ],
+    tasks:[
+      {id:'10.4.1',d:'Explain the basic autopilot system: identify controller, servos, and how pilot commands reach the control surfaces.',s:'Components identified; signal flow explained'},
+      {id:'10.4.2',d:'Demonstrate autopilot preflight check per the aircraft POH or manufacturer procedure.',s:'Preflight completed per procedure'},
+      {id:'10.4.3',d:'Test autopilot disconnect: verify control wheel disconnect, panel button, and aural/visual annunciation.',s:'All disconnect methods verified; annunciations confirmed'},
+      {id:'10.4.4',d:'Verify electric trim operation: demonstrate manual trim, verify proper direction, check trim indicator.',s:'Trim operates correctly; direction verified; indicator accurate'},
+      {id:'10.4.5',d:'Perform autopilot functional check: engage heading mode and altitude hold, verify proper response.',s:'Modes engage properly; aircraft responds correctly'},
+      {id:'10.4.6',d:'Explain the difference between flight director and autopilot operation.',s:'FD vs AP difference correctly explained'},
+      {id:'10.4.7',d:'Troubleshoot an \'autopilot will not engage\' squawk: describe systematic checks.',s:'Logical troubleshooting approach described'}
+    ]
+  },
+  {
+    num:11, title:'Compass Systems',
+    objective:'Demonstrate the ability to verify and calibrate aircraft magnetic compass systems.',
+    fundamentals:[
+      'Magnetic compass construction and limitations',
+      'Compass errors: variation, deviation, acceleration errors, turning errors',
+      'Slaved compass systems: flux valve, slaving amplifier, HSI',
+      'Compass swing procedures and when required',
+      'Deviation card requirements',
+      'Free gyro vs slaved gyro operation'
+    ],
+    risks:[
+      'Compass deviation exceeding limits after avionics installation',
+      'Swinging compass with magnetic items (tools, equipment) in cockpit',
+      'Flux valve location too close to magnetic interference sources',
+      'Failure to update deviation card after changes to aircraft'
+    ],
+    tasks:[
+      {id:'11.4.1',d:'Inspect magnetic compass: check fluid level, card freedom, lighting. Compare indication to known heading.',s:'Inspection complete; discrepancies noted'},
+      {id:'11.4.2',d:'State when a compass swing is required (new radio near compass, engine replacement, damage repair, etc.).',s:'Triggers for compass swing correctly stated'},
+      {id:'11.4.3',d:'Describe compass swing procedure: positioning on compass rose, recording headings, calculating deviation.',s:'Procedure accurately described'},
+      {id:'11.4.4',d:'Create or verify a compass deviation card: correct format, values within 10\u00b0 limit, properly installed.',s:'Card correct format; values within limits; installed properly'},
+      {id:'11.4.5',d:'For aircraft with slaved compass: explain how the flux valve, slaving amplifier, and HSI work together.',s:'Slaved system operation correctly explained'},
+      {id:'11.4.6',d:'Assist in performing a compass swing. Record data at cardinal and intercardinal headings.',s:'Data recorded accurately at all required headings'}
+    ]
+  },
+  {
+    num:12, title:'Electronic Flight Bags and Connectivity',
+    objective:'Demonstrate the ability to verify Electronic Flight Bag installations and basic aircraft connectivity systems.',
+    fundamentals:[
+      'EFB classes and what distinguishes installed vs portable',
+      'EFB mounting requirements: security, visibility, accessibility',
+      'EFB power: aircraft power connection vs battery operation',
+      'EFB data interface: GPS, AHRS, traffic, weather (where installed)',
+      'Basic WiFi systems: router location, passenger vs cockpit network separation',
+      'ADS-B In receivers: traffic and weather display'
+    ],
+    risks:[
+      'EFB mount failure causing loose equipment in cockpit',
+      'EFB blocking critical flight controls or instruments',
+      'WiFi interference with avionics (rare but possible)',
+      'Reliance on uncertified EFB data for primary navigation'
+    ],
+    tasks:[
+      {id:'12.4.1',d:'Verify EFB mounting: check mount security, verify it doesn\'t block controls or instruments, confirm disconnect accessible.',s:'Mount secure; no obstruction; disconnect accessible'},
+      {id:'12.4.2',d:'Verify EFB power connection (if installed): check wiring, circuit breaker, power indication.',s:'Power connection verified; CB identified'},
+      {id:'12.4.3',d:'Verify EFB receives data from installed sources: GPS position, traffic (if equipped), weather (if equipped).',s:'Data reception verified for installed sources'},
+      {id:'12.4.4',d:'For aircraft with WiFi: identify router/access point location, verify system powers up, explain network separation.',s:'Components identified; power verified; separation explained'},
+      {id:'12.4.5',d:'Verify portable ADS-B In receiver operation: traffic display, weather display (if equipped), GPS status.',s:'Receiver functions verified'},
+      {id:'12.4.6',d:'Troubleshoot \'no data to EFB\' squawk: check data source, connections, EFB settings.',s:'Systematic troubleshooting approach; fault isolated'}
+    ]
+  },
+  {
+    num:13, title:'Flight Management Systems',
+    objective:'Demonstrate the ability to operate, configure, and maintain Flight Management Systems at the level common in GA/BA aircraft.',
+    fundamentals:[
+      'FMS/GPS navigator architecture: display unit, GPS receiver, antennas',
+      'Navigation database: AIRAC cycle, expiration, update process',
+      'Basic flight plan entry: direct-to, flight plan waypoints, airways',
+      'Procedures: selecting SID, STAR, and approach',
+      'FMS-to-autopilot interface: LNAV, VNAV (where equipped), GPS steering',
+      'FMS messages and alerts: discontinuities, RAIM warnings, terrain alerts'
+    ],
+    risks:[
+      'Flying with expired navigation database',
+      'Incorrect flight plan entry causing navigation errors',
+      'Not addressing route discontinuities before flight',
+      'Database update failure corrupting navigation data'
+    ],
+    tasks:[
+      {id:'13.4.1',d:'Check navigation database currency on a GTN, G1000, or similar unit. Locate current cycle and expiration date.',s:'Database currency verified; dates located'},
+      {id:'13.4.2',d:'Perform a navigation database update using Garmin, Jeppesen, or equivalent data card/WiFi method.',s:'Update completed successfully; new cycle verified'},
+      {id:'13.4.3',d:'Enter a basic flight plan: origin, destination, one intermediate waypoint. Verify route displays correctly.',s:'Flight plan entered; route displayed correctly'},
+      {id:'13.4.4',d:'Select a departure procedure (SID or ODP) and an arrival procedure (STAR) in the flight plan.',s:'Procedures correctly selected and loaded'},
+      {id:'13.4.5',d:'Load an approach procedure for the destination. Activate the approach and vectors-to-final.',s:'Approach loaded and activated correctly'},
+      {id:'13.4.6',d:'Explain what a route discontinuity is and how to resolve it.',s:'Discontinuity concept explained; resolution method described'},
+      {id:'13.4.7',d:'Verify FMS output to autopilot: engage GPS/NAV mode, confirm autopilot follows FMS steering.',s:'Autopilot follows FMS lateral guidance'},
+      {id:'13.4.8',d:'Troubleshoot a \'database error\' or \'database not found\' message.',s:'Troubleshooting steps described; resolution identified'}
+    ]
+  }
+];
+
+const TOTAL_TASKS = PQS.reduce((s,sec) => s + sec.tasks.length, 0);
+
+/* ============================================================
+   DEMO CANDIDATES
+   ============================================================ */
+const CANDIDATES = [
+  { id:'sarah', name:'Sarah Chen', shop:'Thompson Avionics', city:'Denver, CO', evaluator:'Mike Thompson', writtenPassed:true, writtenDate:'2025-10-18' },
+  { id:'marcus', name:'Marcus Rodriguez', shop:'Pacific Coast Avionics', city:'San Diego, CA', evaluator:'Lisa Park', writtenPassed:true, writtenDate:'2025-08-22' },
+  { id:'jake', name:'Jake Williams', shop:'Midwest Aviation Electronics', city:'Kansas City, MO', evaluator:'Mike Thompson', writtenPassed:true, writtenDate:'2025-11-05' },
+  { id:'emily', name:'Emily Park', shop:'SkyTech Avionics', city:'Seattle, WA', evaluator:'David Kim', writtenPassed:false, writtenDate:null }
+];
+
+const PORTFOLIO_ITEMS = [
+  { key:'qual_record', label:'Qualification Record' },
+  { key:'written_cert', label:'Written Exam Certificate' },
+  { key:'logbook_transponder', label:'Transponder Test Logbook Entry' },
+  { key:'logbook_pitot', label:'Pitot-Static Test Logbook Entry' },
+  { key:'form_337', label:'FAA Form 337 (Major Alteration)' },
+  { key:'transponder_form', label:'Transponder Test Data Form' },
+  { key:'deviation_card', label:'Compass Deviation Card' }
+];
+
+/* ============================================================
+   DEFAULT STATE
+   ============================================================ */
+function buildDefaultState() {
+  const state = { tasks:{}, portfolio:{}, oralScores:{}, oralResult:null };
+  // Task statuses for Sarah Chen
+  const baseDates = [
+    '2025-11-02','2025-11-10','2025-11-18','2025-11-24','2025-12-01',
+    '2025-12-05','2025-12-10','2025-12-15','2026-01-06','2026-01-20',
+    '2026-02-03','2026-02-17','2026-02-24'
+  ];
+  PQS.forEach((sec,si) => {
+    sec.tasks.forEach((task,ti) => {
+      let status = 'signed_off';
+      let date = null;
+      if (si <= 8) {
+        status = 'signed_off';
+        const base = new Date(baseDates[si]);
+        base.setDate(base.getDate() + ti);
+        date = base.toISOString().split('T')[0];
+      } else if (si === 9) {
+        if (ti < 5) { status='signed_off'; const b=new Date('2026-01-20'); b.setDate(b.getDate()+ti); date=b.toISOString().split('T')[0]; }
+        else if (ti === 5) status='submitted';
+        else status='in_progress';
+      } else if (si === 10) {
+        if (ti < 4) { status='signed_off'; const b=new Date('2026-02-03'); b.setDate(b.getDate()+ti*2); date=b.toISOString().split('T')[0]; }
+        else if (ti === 4) status='submitted';
+        else status='not_started';
+      } else if (si === 11) {
+        if (ti < 2) { status='signed_off'; const b=new Date('2026-02-17'); b.setDate(b.getDate()+ti*2); date=b.toISOString().split('T')[0]; }
+        else if (ti < 4) status='submitted';
+        else if (ti === 4) status='in_progress';
+        else status='not_started';
+      } else if (si === 12) {
+        if (ti === 0) { status='signed_off'; date='2026-02-24'; }
+        else if (ti === 1) status='submitted';
+        else status='not_started';
+      }
+      state.tasks[task.id] = { status, date, evaluator: status==='signed_off'?'Mike Thompson':null, notes:'' };
+    });
+  });
+  // Portfolio for Sarah
+  state.portfolio = {
+    qual_record: true, written_cert: true, logbook_transponder: true,
+    logbook_pitot: true, form_337: true, transponder_form: false, deviation_card: false
+  };
+  // Marcus: all tasks signed off, all portfolio done
+  state.marcus = { allSigned: true, allPortfolio: true, status: 'oral_ready' };
+  // Jake: 32 signed off
+  state.jake = { signedOff: 32, total: 75 };
+  // Emily: 0
+  state.emily = { signedOff: 0, total: 75 };
+  return state;
+}
+
+/* ============================================================
+   STATE MANAGEMENT
+   ============================================================ */
+const STORAGE_KEY = 'caet_demo_state';
+let state;
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) { state = JSON.parse(saved); return; }
+  } catch(e) {}
+  state = buildDefaultState();
+  saveState();
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function resetState() {
+  state = buildDefaultState();
+  saveState();
+  navigate('landing');
+  toast('Demo reset to default state', 'info');
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function getTaskCounts() {
+  let signed=0, submitted=0, progress=0, notStarted=0, needsWork=0;
+  PQS.forEach(sec => sec.tasks.forEach(t => {
+    const s = state.tasks[t.id]?.status || 'not_started';
+    if (s==='signed_off') signed++;
+    else if (s==='submitted') submitted++;
+    else if (s==='in_progress') progress++;
+    else if (s==='needs_work') needsWork++;
+    else notStarted++;
+  }));
+  return { signed, submitted, progress, notStarted, needsWork, total: TOTAL_TASKS };
+}
+
+function getSectionCounts(sec) {
+  let signed=0;
+  sec.tasks.forEach(t => { if ((state.tasks[t.id]?.status||'not_started')==='signed_off') signed++; });
+  return { signed, total: sec.tasks.length };
+}
+
+function getPortfolioCount() {
+  return Object.values(state.portfolio).filter(Boolean).length;
+}
+
+function statusBadge(status) {
+  const map = {
+    signed_off: '<span class="badge badge-signed">Signed Off</span>',
+    submitted: '<span class="badge badge-submitted">Submitted</span>',
+    in_progress: '<span class="badge badge-progress">In Progress</span>',
+    not_started: '<span class="badge badge-notstarted">Not Started</span>',
+    needs_work: '<span class="badge badge-needswork">Needs Work</span>'
+  };
+  return map[status] || map.not_started;
+}
+
+function progressRingSVG(pct, size=150, stroke=11) {
+  const r = (size/2) - stroke;
+  const circ = 2 * Math.PI * r;
+  const offset = circ - (pct/100) * circ;
+  return `<div class="progress-ring" style="width:${size}px;height:${size}px">
+    <svg width="${size}" height="${size}"><circle class="bg-ring" cx="${size/2}" cy="${size/2}" r="${r}"/>
+    <circle class="fg-ring" cx="${size/2}" cy="${size/2}" r="${r}" style="stroke-dasharray:${circ};stroke-dashoffset:${offset}"/></svg>
+    <div class="pct">${pct}%<small>${Math.round(pct*TOTAL_TASKS/100)} / ${TOTAL_TASKS}</small></div></div>`;
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+let currentView = 'landing';
+const app = document.getElementById('app');
+
+function navigate(view, data) {
+  currentView = view;
+  window.scrollTo(0, 0);
+  switch(view) {
+    case 'landing': renderLanding(); break;
+    case 'technician': renderTechnician(); break;
+    case 'evaluator': renderEvaluator(); break;
+    case 'evaluator-detail': renderEvaluatorDetail(data); break;
+    case 'committee': renderCommittee(); break;
+    case 'committee-scoring': renderCommitteeScoring(data); break;
+    case 'admin': renderAdmin(); break;
+  }
+}
+
+/* ============================================================
+   RENDER: LANDING PAGE
+   ============================================================ */
+function renderLanding() {
+  app.innerHTML = `
+    <header class="header">
+      <div class="header-inner">
+        <div class="header-brand" onclick="navigate('landing')">
+          <div class="header-logo">AEA</div>
+          <div class="header-text"><div class="header-title">CAET Advanced Tracking Tool</div>
+          <div class="header-sub">Aircraft Electronics Association</div></div>
+        </div>
+        <div class="header-actions">
+          <button class="btn-reset" onclick="resetState()">Reset Demo</button>
+        </div>
+      </div>
+    </header>
+    <section class="hero">
+      <h1>CAET <span class="gold">Advanced</span></h1>
+      <p class="tagline">Track every technician through 75 practical tasks, 13 PQS sections, and the complete certification pipeline \u2014 from written exam to certified avionics technician.</p>
+    </section>
+    <div class="stat-strip">
+      <div class="stat-item"><div class="stat-num">${TOTAL_TASKS}</div><div class="stat-label">Practical Tasks</div></div>
+      <div class="stat-item"><div class="stat-num">13</div><div class="stat-label">PQS Sections</div></div>
+      <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">User Roles</div></div>
+      <div class="stat-item"><div class="stat-num">7</div><div class="stat-label">Portfolio Items</div></div>
+    </div>
+    <div class="pipeline-section">
+      <h2>Certification Pipeline</h2>
+      <div class="pipeline">
+        <div class="pipe-step"><div class="pipe-num">1</div><h4>Written Exam</h4><p>Knowledge test</p></div>
+        <div class="pipe-arrow">\u2192</div>
+        <div class="pipe-step"><div class="pipe-num">2</div><h4>PQS Tasks</h4><p>75 practical tasks</p></div>
+        <div class="pipe-arrow">\u2192</div>
+        <div class="pipe-step"><div class="pipe-num">3</div><h4>Portfolio</h4><p>7 evidence items</p></div>
+        <div class="pipe-arrow">\u2192</div>
+        <div class="pipe-step"><div class="pipe-num">4</div><h4>Oral Board</h4><p>3-phase review</p></div>
+        <div class="pipe-arrow">\u2192</div>
+        <div class="pipe-step" style="border-color:var(--gold);background:var(--gold-pale)"><div class="pipe-num" style="background:var(--gold)">5</div><h4>Certified!</h4><p>CAET Advanced</p></div>
+      </div>
+    </div>
+    <section class="roles-section">
+      <h2>Select Your Role</h2>
+      <p class="subtitle">Experience the tracking tool from any perspective in the certification process.</p>
+      <div class="role-grid">
+        <div class="role-card fade-in stagger-1" onclick="navigate('technician')">
+          <div class="role-icon">\uD83D\uDD27</div>
+          <h3>Technician</h3>
+          <div class="role-name">Sarah Chen</div>
+          <p>Track progress through all 75 tasks, build your portfolio, see your pipeline status.</p>
+        </div>
+        <div class="role-card fade-in stagger-2" onclick="navigate('evaluator')">
+          <div class="role-icon">\u2705</div>
+          <h3>Evaluator</h3>
+          <div class="role-name">Mike Thompson</div>
+          <p>Review candidate work, sign off completed tasks, manage your roster.</p>
+        </div>
+        <div class="role-card fade-in stagger-3" onclick="navigate('committee')">
+          <div class="role-icon">\u2696\uFE0F</div>
+          <h3>Committee</h3>
+          <div class="role-name">Dr. Patricia Hayes</div>
+          <p>Conduct oral board evaluations with rubric scoring across three phases.</p>
+        </div>
+        <div class="role-card fade-in stagger-4" onclick="navigate('admin')">
+          <div class="role-icon">\uD83D\uDCCA</div>
+          <h3>AEA Admin</h3>
+          <div class="role-name">AEA Staff</div>
+          <p>Monitor the entire pipeline, review metrics, manage the certification program.</p>
+        </div>
+      </div>
+    </section>
+    <footer class="footer">
+      <div class="footer-brand">Aircraft Electronics Association</div>
+      <p>CAET Advanced Tracking Tool \u2014 Built for AEA by Ace Avionics Training</p>
+      <p style="margin-top:0.4rem;font-size:0.78rem;opacity:0.5">\u00a9 2025 AEA. All rights reserved.</p>
+    </footer>`;
+}
+
+/* ============================================================
+   RENDER: TECHNICIAN DASHBOARD
+   ============================================================ */
+function renderTechnician() {
+  const c = getTaskCounts();
+  const pct = Math.round((c.signed / c.total) * 100);
+  const portCount = getPortfolioCount();
+  const allTasksDone = c.signed === c.total;
+  const allPortfolio = portCount === 7;
+
+  let sectionsHTML = '';
+  PQS.forEach((sec,si) => {
+    const sc = getSectionCounts(sec);
+    const secPct = Math.round((sc.signed/sc.total)*100);
+    const isComplete = sc.signed === sc.total;
+    const isOpen = !isComplete && si === PQS.findIndex(s => getSectionCounts(s).signed < s.tasks.length);
+
+    let tasksHTML = '';
+    sec.tasks.forEach(t => {
+      const ts = state.tasks[t.id] || {status:'not_started'};
+      tasksHTML += `<tr>
+        <td style="font-weight:600;white-space:nowrap">${t.id}</td>
+        <td class="td-desc">${t.d}</td>
+        <td>${statusBadge(ts.status)}</td>
+        <td style="font-size:0.8rem;color:var(--text-muted)">${ts.date||'\u2014'}</td>
+      </tr>`;
+    });
+
+    let fundsHTML = '';
+    sec.fundamentals.forEach((f,i) => {
+      fundsHTML += `<li><span class="fund-num">${sec.num}.2.${i+1}</span><span>${f}</span></li>`;
+    });
+
+    let risksHTML = '';
+    sec.risks.forEach(r => {
+      risksHTML += `<li><span class="risk-icon">\u26A0</span><span>${r}</span></li>`;
+    });
+
+    sectionsHTML += `
+      <div class="section-card ${isOpen?'open':''} ${isComplete?'sec-complete':''}" id="sec-${sec.num}">
+        <div class="sec-header" onclick="this.parentElement.classList.toggle('open')">
+          <h4>${isComplete?'\u2713 ':''} Section ${sec.num}: ${sec.title}</h4>
+          <div class="sec-meta">
+            <span class="count">${sc.signed}/${sc.total}</span>
+            <div class="progress-bar"><div class="fill fill-green" style="width:${secPct}%"></div></div>
+            <span class="chevron">\u25BC</span>
+          </div>
+        </div>
+        <div class="sec-body">
+          <div class="sec-tabs">
+            <button class="sec-tab active" onclick="switchSecTab(this,'tasks-${sec.num}')">Tasks</button>
+            <button class="sec-tab" onclick="switchSecTab(this,'fund-${sec.num}')">Fundamentals (${sec.fundamentals.length})</button>
+            <button class="sec-tab" onclick="switchSecTab(this,'risk-${sec.num}')">Risks (${sec.risks.length})</button>
+          </div>
+          <div class="sec-tab-content active" id="tasks-${sec.num}">
+            <table class="data-table"><thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody>${tasksHTML}</tbody></table>
+          </div>
+          <div class="sec-tab-content" id="fund-${sec.num}">
+            <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.75rem;font-style:italic">${sec.objective}</p>
+            <ul class="fund-list">${fundsHTML}</ul>
+          </div>
+          <div class="sec-tab-content" id="risk-${sec.num}">
+            <ul class="risk-list">${risksHTML}</ul>
+          </div>
+        </div>
+      </div>`;
+  });
+
+  let portfolioHTML = '';
+  PORTFOLIO_ITEMS.forEach(p => {
+    const done = state.portfolio[p.key];
+    portfolioHTML += `<li class="portfolio-item" onclick="togglePortfolio('${p.key}')">
+      <span class="check-icon ${done?'check-on':'check-off'}">${done?'\u2713':'\u25CB'}</span>
+      <span>${p.label}</span>
+      <span style="margin-left:auto;font-size:0.78rem;color:${done?'var(--green)':'var(--text-muted)'}">${done?'Submitted':'Pending'}</span>
+    </li>`;
+  });
+
+  app.innerHTML = `
+    <header class="header">
+      <div class="header-inner">
+        <div class="header-brand" onclick="navigate('landing')">
+          <div class="header-logo">AEA</div>
+          <div class="header-text"><div class="header-title">CAET Advanced Tracker</div><div class="header-sub">Technician Dashboard</div></div>
+        </div>
+        <div class="header-actions">
+          <span class="header-user">\uD83D\uDD27 Sarah Chen \u2014 Thompson Avionics</span>
+          <button class="btn-back" onclick="navigate('landing')">\u2190 Switch Role</button>
+          <button class="btn-reset" onclick="resetState()">Reset</button>
+        </div>
+      </div>
+    </header>
+    <div class="dashboard">
+      <div style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-start;margin-bottom:1rem">
+        <div class="progress-ring-wrap fade-in">${progressRingSVG(pct)}</div>
+        <div style="flex:1;min-width:280px">
+          <div class="mini-stats fade-in stagger-1">
+            <div class="mini-stat"><div class="num" style="color:var(--green)">${c.signed}</div><div class="label">Signed Off</div></div>
+            <div class="mini-stat"><div class="num" style="color:var(--blue)">${c.submitted}</div><div class="label">Submitted</div></div>
+            <div class="mini-stat"><div class="num" style="color:var(--orange)">${c.progress}</div><div class="label">In Progress</div></div>
+            <div class="mini-stat"><div class="num" style="color:#999">${c.notStarted}</div><div class="label">Not Started</div></div>
+          </div>
+          <h3 style="color:var(--navy);margin-bottom:0.5rem;font-size:0.95rem">Pipeline Status</h3>
+          <div class="pipeline-steps fade-in stagger-2">
+            <div class="p-step done">\u2713 Written Exam</div>
+            <div class="p-step ${allTasksDone?'done':'current'}">${allTasksDone?'\u2713':'\u25CF'} PQS Tasks (${pct}%)</div>
+            <div class="p-step ${allTasksDone&&allPortfolio?'done':allTasksDone?'current':'pending'}">${allTasksDone&&allPortfolio?'\u2713':''} Portfolio (${portCount}/7)</div>
+            <div class="p-step ${state.oralResult?'done':'pending'}">Oral Board</div>
+            <div class="p-step ${state.oralResult==='qualified'?'done':'pending'}">Certified</div>
+          </div>
+        </div>
+      </div>
+      <h3 style="color:var(--navy);margin:1.5rem 0 0.75rem;font-size:1.1rem">PQS Sections</h3>
+      ${sectionsHTML}
+      <div class="card fade-in" style="margin-top:1.5rem">
+        <h3>\uD83D\uDCC1 Portfolio Checklist (${portCount}/7)</h3>
+        <ul class="portfolio-list">${portfolioHTML}</ul>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="footer-brand">Aircraft Electronics Association</div>
+      <p>CAET Advanced Tracking Tool</p>
+    </footer>`;
+}
+
+function switchSecTab(btn, targetId) {
+  const card = btn.closest('.section-card');
+  card.querySelectorAll('.sec-tab').forEach(t => t.classList.remove('active'));
+  card.querySelectorAll('.sec-tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(targetId).classList.add('active');
+}
+
+function togglePortfolio(key) {
+  state.portfolio[key] = !state.portfolio[key];
+  saveState();
+  toast(state.portfolio[key] ? 'Portfolio item submitted' : 'Portfolio item removed', state.portfolio[key] ? 'success' : 'info');
+  renderTechnician();
+}
+
+/* ============================================================
+   RENDER: EVALUATOR DASHBOARD
+   ============================================================ */
+function renderEvaluator() {
+  const c = getTaskCounts();
+  const sarahPct = Math.round((c.signed/c.total)*100);
+
+  app.innerHTML = `
+    <header class="header">
+      <div class="header-inner">
+        <div class="header-brand" onclick="navigate('landing')">
+          <div class="header-logo">AEA</div>
+          <div class="header-text"><div class="header-title">CAET Advanced Tracker</div><div class="header-sub">Evaluator Dashboard</div></div>
+        </div>
+        <div class="header-actions">
+          <span class="header-user">\u2705 Mike Thompson \u2014 Thompson Avionics</span>
+          <button class="btn-back" onclick="navigate('landing')">\u2190 Switch Role</button>
+          <button class="btn-reset" onclick="resetState()">Reset</button>
+        </div>
+      </div>
+    </header>
+    <div class="dashboard">
+      <div class="dash-header fade-in">
+        <h2>\u2705 Evaluator Dashboard</h2>
+        <div class="dash-sub">Manage your assigned candidates and sign off completed tasks.</div>
+      </div>
+      <div class="mini-stats fade-in stagger-1">
+        <div class="mini-stat"><div class="num" style="color:var(--navy)">2</div><div class="label">My Candidates</div></div>
+        <div class="mini-stat"><div class="num" style="color:var(--blue)">${c.submitted}</div><div class="label">Pending Review</div></div>
+        <div class="mini-stat"><div class="num" style="color:var(--green)">${c.signed}</div><div class="label">Total Signed Off</div></div>
+      </div>
+      <div class="card fade-in stagger-2">
+        <h3>My Candidates</h3>
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Shop</th><th>Progress</th><th>Pending Review</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600">Sarah Chen</td>
+              <td>Thompson Avionics, Denver CO</td>
+              <td>
+                <div style="display:flex;align-items:center;gap:0.5rem">
+                  <div class="progress-bar" style="width:100px"><div class="fill fill-green" style="width:${sarahPct}%"></div></div>
+                  <span style="font-size:0.82rem;font-weight:600">${sarahPct}%</span>
+                </div>
+              </td>
+              <td><span class="badge badge-submitted">${c.submitted} tasks</span></td>
+              <td><button class="btn btn-primary btn-sm" onclick="navigate('evaluator-detail','sarah')">Review</button></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Jake Williams</td>
+              <td>Midwest Aviation Electronics, Kansas City MO</td>
+              <td>
+                <div style="display:flex;align-items:center;gap:0.5rem">
+                  <div class="progress-bar" style="width:100px"><div class="fill fill-green" style="width:43%"></div></div>
+                  <span style="font-size:0.82rem;font-weight:600">43%</span>
+                </div>
+              </td>
+              <td><span class="badge badge-submitted">3 tasks</span></td>
+              <td><button class="btn btn-outline btn-sm" onclick="toast('Jake\\'s detailed view would load here','info')">Review</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <footer class="footer"><div class="footer-brand">Aircraft Electronics Association</div><p>CAET Advanced Tracking Tool</p></footer>`;
+}
+
+/* ============================================================
+   RENDER: EVALUATOR DETAIL
+   ============================================================ */
+function renderEvaluatorDetail(candidateId) {
+  const c = getTaskCounts();
+  let currentFilter = 'all';
+
+  function buildTaskRows(filter) {
+    let html = '';
+    PQS.forEach(sec => {
+      sec.tasks.forEach(t => {
+        const ts = state.tasks[t.id] || {status:'not_started'};
+        if (filter !== 'all' && ts.status !== filter) return;
+        const canSignOff = ts.status === 'submitted' || ts.status === 'needs_work';
+        html += `<tr>
+          <td style="font-weight:600;white-space:nowrap">${t.id}</td>
+          <td class="td-desc">${t.d}</td>
+          <td>${statusBadge(ts.status)}</td>
+          <td style="font-size:0.8rem;color:var(--text-muted)">${ts.date||'\u2014'}</td>
+          <td>${canSignOff ? `<button class="btn btn-success btn-sm" onclick="openSignOffModal('${t.id}')">Sign Off</button>` : ts.status==='signed_off'?'<span style="color:var(--green);font-size:0.82rem;font-weight:600">\u2713 Done</span>':'\u2014'}</td>
+        </tr>`;
+      });
+    });
+    return html || '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem">No tasks match this filter</td></tr>';
+  }
+
+  app.innerHTML = `
+    <header class="header">
+      <div class="header-inner">
+        <div class="header-brand" onclick="navigate('landing')">
+          <div class="header-logo">AEA</div>
+          <div class="header-text"><div class="header-title">CAET Advanced Tracker</div><div class="header-sub">Evaluator \u2014 Candidate Review</div></div>
+        </div>
+        <div class="header-actions">
+          <span class="header-user">\u2705 Mike Thompson</span>
+          <button class="btn-back" onclick="navigate('evaluator')">\u2190 Back to Roster</button>
+          <button class="btn-reset" onclick="resetState()">Reset</button>
+        </div>
+      </div>
+    </header>
+    <div class="dashboard">
+      <div class="dash-header fade-in">
+        <h2>Sarah Chen</h2>
+        <div class="dash-sub">Thompson Avionics, Denver CO \u2014 ${c.signed}/${c.total} tasks signed off</div>
+      </div>
+      <div class="filter-bar fade-in stagger-1" id="eval-filters">
+        <button class="filter-btn active" onclick="filterEvalTasks('all',this)">All (${c.total})</button>
+        <button class="filter-btn" onclick="filterEvalTasks('submitted',this)">Pending Review (${c.submitted})</button>
+        <button class="filter-btn" onclick="filterEvalTasks('signed_off',this)">Signed Off (${c.signed})</button>
+        <button class="filter-btn" onclick="filterEvalTasks('in_progress',this)">In Progress (${c.progress})</button>
+        <button class="filter-btn" onclick="filterEvalTasks('not_started',this)">Not Started (${c.notStarted})</button>
+      </div>
+      <div class="card fade-in stagger-2">
+        <table class="data-table" id="eval-task-table">
+          <thead><tr><th>Task</th><th>Description</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody id="eval-task-tbody">${buildTaskRows('all')}</tbody>
+        </table>
+      </div>
+    </div>
+    <footer class="footer"><div class="footer-brand">Aircraft Electronics Association</div><p>CAET Advanced Tracking Tool</p></footer>`;
+
+  // Store buildTaskRows for filter function
+  window._evalBuildRows = buildTaskRows;
+}
+
+function filterEvalTasks(filter, btn) {
+  document.querySelectorAll('#eval-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('eval-task-tbody').innerHTML = window._evalBuildRows(filter);
+}
+
+function openSignOffModal(taskId) {
+  const task = PQS.flatMap(s=>s.tasks).find(t=>t.id===taskId);
+  if (!task) return;
+  const section = PQS.find(s=>s.tasks.includes(task));
+  const modal = document.getElementById('modal-overlay');
+  modal.innerHTML = `<div class="modal">
+    <h3>Review Task ${task.id}</h3>
+    <div class="modal-sub">Section ${section.num}: ${section.title}</div>
+    <div class="modal-detail"><strong>Task Description</strong><br>${task.d}</div>
+    <div class="modal-detail"><strong>Performance Standard</strong><br>${task.s}</div>
+    <label>Evaluator Notes</label>
+    <textarea id="signoff-notes" placeholder="Optional notes about the candidate's performance..."></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="hideModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="signOffTask('${task.id}','needs_work')">Needs Work</button>
+      <button class="btn btn-success" onclick="signOffTask('${task.id}','signed_off')">Sign Off \u2713</button>
+    </div>
+  </div>`;
+  modal.classList.add('show');
+}
+
+function signOffTask(taskId, newStatus) {
+  const notes = document.getElementById('signoff-notes')?.value || '';
+  state.tasks[taskId] = {
+    status: newStatus,
+    date: newStatus === 'signed_off' ? new Date().toISOString().split('T')[0] : null,
+    evaluator: newStatus === 'signed_off' ? 'Mike Thompson' : null,
+    notes: notes
+  };
+  saveState();
+  hideModal();
+  toast(newStatus === 'signed_off' ? `Task ${taskId} signed off!` : `Task ${taskId} returned for rework`, newStatus === 'signed_off' ? 'success' : 'warning');
+  renderEvaluatorDetail('sarah');
+}
+
+/* ============================================================
+   RENDER: COMMITTEE DASHBOARD
+   ============================================================ */
+function renderCommittee() {
+  app.innerHTML = `
+    <header class="header">
+      <div class="header-inner">
+        <div class="header-brand" onclick="navigate('landing')">
+          <div class="header-logo">AEA</div>
+          <div class="header-text"><div class="header-title">CAET Advanced Tracker</div><div class="header-sub">Committee Dashboard</div></div>
+        </div>
+        <div class="header-actions">
+          <span class="header-user">\u2696\uFE0F Dr. Patricia Hayes \u2014 Oral Board Committee</span>
+          <button class="btn-back" onclick="navigate('landing')">\u2190 Switch Role</button>
+          <button class="btn-reset" onclick="resetState()">Reset</button>
+        </div>
+      </div>
+    </header>
+    <div class="dashboard">
+      <div class="dash-header fade-in">
+        <h2>\u2696\uFE0F Oral Board Queue</h2>
+        <div class="dash-sub">Candidates who have completed all PQS tasks and submitted their portfolio are ready for oral evaluation.</div>
+      </div>
+      <div class="mini-stats fade-in stagger-1">
+        <div class="mini-stat"><div class="num" style="color:var(--gold)">1</div><div class="label">Ready for Oral</div></div>
+        <div class="mini-stat"><div class="num" style="color:var(--green)">0</div><div class="label">Completed Today</div></div>
+        <div class="mini-stat"><div class="num" style="color:var(--navy)">3</div><div class="label">Phases Per Eval</div></div>
+      </div>
+      <div class="card fade-in stagger-2">
+        <h3>Candidates Ready for Oral Board</h3>
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Shop</th><th>PQS</th><th>Portfolio</th><th>Evaluator</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600">Marcus Rodriguez</td>
+              <td>Pacific Coast Avionics, San Diego CA</td>
+              <td><span class="badge badge-signed">75/75</span></td>
+              <td><span class="badge badge-signed">7/7</span></td>
+              <td>Lisa Park</td>
+              <td><button class="btn btn-gold btn-sm" onclick="navigate('committee-scoring','marcus')">Start Evaluation</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card fade-in stagger-3">
+        <h3>Recent Oral Board Results</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;padding:1rem 0">No recent evaluations. Complete Marcus Rodriguez's oral board to see results here.</p>
+      </div>
+    </div>
+    <footer class="footer"><div class="footer-brand">Aircraft Electronics Association</div><p>CAET Advanced Tracking Tool</p></footer>`;
+}
+
+/* ============================================================
+   RENDER: COMMITTEE SCORING
+   ============================================================ */
+function renderCommitteeScoring(candidateId) {
+  const scores = state.oralScores || { portfolio:0, technical:0, scenario:0, portfolioNotes:'', technicalNotes:'', scenarioNotes:'' };
+  state.oralScores = scores;
+
+  function dotsHTML(phase, current) {
+    let html = '';
+    for (let i=1; i<=5; i++) {
+      html += `<div class="dot ${i<=current?'filled':''}" onclick="setScore('${phase}',${i})">${i}</div>`;
+    }
+    return html;
+  }
+
+  app.innerHTML = `
+    <header class="header">
+      <div class="header-inner">
+        <div class="header-brand" onclick="navigate('landing')">
+          <div class="header-logo">AEA</div>
+          <div class="header-text"><div class="header-title">CAET Advanced Tracker</div><div class="header-sub">Oral Board Evaluation</div></div>
+        </div>
+        <div class="header-actions">
+          <span class="header-user">\u2696\uFE0F Dr. Patricia Hayes</span>
+          <button class="btn-back" onclick="navigate('committee')">\u2190 Back to Queue</button>
+          <button class="btn-reset" onclick="resetState()">Reset</button>
+        </div>
+      </div>
+    </header>
+    <div class="dashboard">
+      <div class="dash-header fade-in">
+        <h2>Oral Board: Marcus Rodriguez</h2>
+        <div class="dash-sub">Pacific Coast Avionics, San Diego CA \u2014 75/75 tasks complete, 7/7 portfolio items submitted</div>
+      </div>
+      <div class="rubric-grid fade-in stagger-1">
+        <div class="rubric-card">
+          <h4>Phase 1: Portfolio Review</h4>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.75rem">Does the portfolio demonstrate competence?</p>
+          <div class="rubric-score" id="score-portfolio">${scores.portfolio||'\u2014'}</div>
+          <div class="rubric-max">out of 5</div>
+          <div class="score-dots" id="dots-portfolio">${dotsHTML('portfolio',scores.portfolio)}</div>
+          <textarea class="rubric-comments" placeholder="Portfolio comments..." id="notes-portfolio" oninput="state.oralScores.portfolioNotes=this.value;saveState()">${scores.portfolioNotes||''}</textarea>
+        </div>
+        <div class="rubric-card">
+          <h4>Phase 2: Technical Knowledge</h4>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.75rem">Can the candidate explain concepts?</p>
+          <div class="rubric-score" id="score-technical">${scores.technical||'\u2014'}</div>
+          <div class="rubric-max">out of 5</div>
+          <div class="score-dots" id="dots-technical">${dotsHTML('technical',scores.technical)}</div>
+          <textarea class="rubric-comments" placeholder="Technical knowledge comments..." id="notes-technical" oninput="state.oralScores.technicalNotes=this.value;saveState()">${scores.technicalNotes||''}</textarea>
+        </div>
+        <div class="rubric-card">
+          <h4>Phase 3: Practical Scenarios</h4>
+          <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.75rem">Can the candidate apply knowledge?</p>
+          <div class="rubric-score" id="score-scenario">${scores.scenario||'\u2014'}</div>
+          <div class="rubric-max">out of 5</div>
+          <div class="score-dots" id="dots-scenario">${dotsHTML('scenario',scores.scenario)}</div>
+          <textarea class="rubric-comments" placeholder="Practical scenario comments..." id="notes-scenario" oninput="state.oralScores.scenarioNotes=this.value;saveState()">${scores.scenarioNotes||''}</textarea>
+        </div>
+      </div>
+      <div class="decision-area fade-in stagger-2">
+        <h3>Final Decision</h3>
+        <div class="radio-group" id="decision-group">
+          <div class="radio-opt ${state.oralResult==='qualified'?'selected':''}" onclick="selectDecision('qualified',this)">Qualified</div>
+          <div class="radio-opt ${state.oralResult==='qualified_with_reservations'?'selected':''}" onclick="selectDecision('qualified_with_reservations',this)">Qualified with Reservations</div>
+          <div class="radio-opt ${state.oralResult==='not_qualified'?'selected':''}" onclick="selectDecision('not_qualified',this)">Not Qualified</div>
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:0.75rem;justify-content:flex-end">
+          <button class="btn btn-outline" onclick="navigate('committee')">Cancel</button>
+          <button class="btn btn-gold" onclick="submitOralBoard()">Submit Evaluation</button>
+        </div>
+      </div>
+    </div>
+    <footer class="footer"><div class="footer-brand">Aircraft Electronics Association</div><p>CAET Advanced Tracking Tool</p></footer>`;
+}
+
+function setScore(phase, value) {
+  state.oralScores[phase] = value;
+  saveState();
+  // Update dots
+  const container = document.getElementById('dots-'+phase);
+  container.querySelectorAll('.dot').forEach((d,i) => {
+    d.classList.toggle('filled', i < value);
+  });
+  document.getElementById('score-'+phase).textContent = value;
+}
+
+function selectDecision(decision, el) {
+  state.oralResult = decision;
+  saveState();
+  document.querySelectorAll('#decision-group .radio-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function submitOralBoard() {
+  const s = state.oralScores;
+  if (!s.portfolio || !s.technical || !s.scenario) { toast('Please score all three phases before submitting', 'warning'); return; }
+  if (!state.oralResult) { toast('Please select a final decision', 'warning'); return; }
+  saveState();
+  toast('Oral board evaluation submitted for Marcus Rodriguez!', 'success');
+  setTimeout(() => navigate('committee'), 800);
+}
+
+/* ============================================================
+   RENDER: ADMIN DASHBOARD
+   ============================================================ */
+function renderAdmin() {
+  const c = getTaskCounts();
+  const sarahPct = Math.round((c.signed/c.total)*100);
+
+  const funnelData = [
+    { label:'Enrolled', count:4, color:'var(--navy)', width:'100%' },
+    { label:'PQS In Progress', count:2, color:'var(--gold)', width:'55%' },
+    { label:'Portfolio Stage', count:1, color:'var(--blue)', width:'30%' },
+    { label:'Oral Ready', count:1, color:'var(--orange)', width:'28%' },
+    { label:'Certified', count: state.oralResult==='qualified'?1:0, color:'var(--green)', width: state.oralResult==='qualified'?'20%':'8%' }
+  ];
+
+  let funnelHTML = '';
+  funnelData.forEach(f => {
+    funnelHTML += `<div class="funnel-row">
+      <div class="funnel-label">${f.label}</div>
+      <div class="funnel-bar" style="width:${f.width};background:${f.color}">${f.count}<span class="funnel-count">candidates</span></div>
+    </div>`;
+  });
+
+  app.innerHTML = `
+    <header class="header">
+      <div class="header-inner">
+        <div class="header-brand" onclick="navigate('landing')">
+          <div class="header-logo">AEA</div>
+          <div class="header-text"><div class="header-title">CAET Advanced Tracker</div><div class="header-sub">Admin Dashboard</div></div>
+        </div>
+        <div class="header-actions">
+          <span class="header-user">\uD83D\uDCCA AEA Staff</span>
+          <button class="btn-back" onclick="navigate('landing')">\u2190 Switch Role</button>
+          <button class="btn-reset" onclick="resetState()">Reset</button>
+        </div>
+      </div>
+    </header>
+    <div class="dashboard">
+      <div class="dash-header fade-in">
+        <h2>\uD83D\uDCCA Program Overview</h2>
+        <div class="dash-sub">National CAET Advanced certification pipeline across all participating shops.</div>
+      </div>
+      <div class="mini-stats fade-in stagger-1">
+        <div class="mini-stat"><div class="num" style="color:var(--navy)">4</div><div class="label">Total Enrolled</div></div>
+        <div class="mini-stat"><div class="num" style="color:var(--gold)">3</div><div class="label">Active Shops</div></div>
+        <div class="mini-stat"><div class="num" style="color:var(--green)">${state.oralResult==='qualified'?1:0}</div><div class="label">Certified</div></div>
+        <div class="mini-stat"><div class="num" style="color:var(--blue)">3</div><div class="label">Evaluators</div></div>
+      </div>
+      <div class="card fade-in stagger-2">
+        <h3>Pipeline Funnel</h3>
+        <div class="funnel">${funnelHTML}</div>
+      </div>
+      <div class="card fade-in stagger-3">
+        <h3>All Candidates</h3>
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Shop</th><th>Status</th><th>Progress</th><th>Evaluator</th><th>Written Exam</th></tr></thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600">Sarah Chen</td>
+              <td>Thompson Avionics</td>
+              <td><span class="badge badge-progress">PQS In Progress</span></td>
+              <td><div style="display:flex;align-items:center;gap:0.5rem"><div class="progress-bar" style="width:80px"><div class="fill fill-green" style="width:${sarahPct}%"></div></div><span style="font-size:0.82rem">${sarahPct}%</span></div></td>
+              <td>Mike Thompson</td>
+              <td><span class="badge badge-signed">Passed</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Marcus Rodriguez</td>
+              <td>Pacific Coast Avionics</td>
+              <td><span class="badge badge-submitted">${state.oralResult?'Oral Complete':'Oral Ready'}</span></td>
+              <td><div style="display:flex;align-items:center;gap:0.5rem"><div class="progress-bar" style="width:80px"><div class="fill fill-green" style="width:100%"></div></div><span style="font-size:0.82rem">100%</span></div></td>
+              <td>Lisa Park</td>
+              <td><span class="badge badge-signed">Passed</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Jake Williams</td>
+              <td>Midwest Aviation Electronics</td>
+              <td><span class="badge badge-progress">PQS In Progress</span></td>
+              <td><div style="display:flex;align-items:center;gap:0.5rem"><div class="progress-bar" style="width:80px"><div class="fill fill-green" style="width:43%"></div></div><span style="font-size:0.82rem">43%</span></div></td>
+              <td>Mike Thompson</td>
+              <td><span class="badge badge-signed">Passed</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Emily Park</td>
+              <td>SkyTech Avionics</td>
+              <td><span class="badge badge-notstarted">Enrolled</span></td>
+              <td><div style="display:flex;align-items:center;gap:0.5rem"><div class="progress-bar" style="width:80px"><div class="fill fill-green" style="width:0%"></div></div><span style="font-size:0.82rem">0%</span></div></td>
+              <td>David Kim</td>
+              <td><span class="badge badge-needswork">Not Taken</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card fade-in stagger-4">
+        <h3>Evaluator Quality Metrics</h3>
+        <div class="quality-grid">
+          <div class="q-card">
+            <h4>Mike Thompson</h4>
+            <div class="q-sub">Thompson Avionics, Denver CO</div>
+            <div class="q-stat">2</div>
+            <div style="font-size:0.8rem;color:var(--text-muted)">assigned candidates</div>
+            <div style="margin-top:0.5rem;font-size:0.82rem"><strong>${c.signed}</strong> tasks signed off \u2022 <strong>4.2</strong> avg days to review</div>
+          </div>
+          <div class="q-card">
+            <h4>Lisa Park</h4>
+            <div class="q-sub">Pacific Coast Avionics, San Diego CA</div>
+            <div class="q-stat">1</div>
+            <div style="font-size:0.8rem;color:var(--text-muted)">assigned candidates</div>
+            <div style="margin-top:0.5rem;font-size:0.82rem"><strong>75</strong> tasks signed off \u2022 <strong>2.8</strong> avg days to review</div>
+          </div>
+          <div class="q-card">
+            <h4>David Kim</h4>
+            <div class="q-sub">SkyTech Avionics, Seattle WA</div>
+            <div class="q-stat">1</div>
+            <div style="font-size:0.8rem;color:var(--text-muted)">assigned candidates</div>
+            <div style="margin-top:0.5rem;font-size:0.82rem"><strong>0</strong> tasks signed off \u2022 <strong>\u2014</strong> avg days to review</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer"><div class="footer-brand">Aircraft Electronics Association</div><p>CAET Advanced Tracking Tool</p></footer>`;
+}
+
+/* ============================================================
+   TOAST SYSTEM
+   ============================================================ */
+function toast(message, type='success') {
+  const container = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + type;
+  t.textContent = message;
+  container.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 300);
+  }, 3000);
+}
+
+/* ============================================================
+   MODAL SYSTEM
+   ============================================================ */
+function hideModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+loadState();
+navigate('landing');
+</script>
+</body>
+</html>
